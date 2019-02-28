@@ -3,6 +3,9 @@ module Deco7segmentos(bin, a,b,c,d,e,f,g);
     output logic a,b,c,d,e,f,g;
     
     assign a = (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
+    assign b = (bin[2] & bin[1] & ~bin[0]) | (bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[0]) | (~bin[3] & bin[2] & ~bin[1] & bin[0]);
+    assign c = (bin[3] & bin[2] & ~bin[0]) | (bin[3] & bin[2] & bin[1]) | (~bin[3] & ~bin[2] & bin[1] & ~bin[0]);
+    assign d = (bin[2] & bin[1] & bin[0]) | (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & ~bin[0]);
     
      
 endmodule
