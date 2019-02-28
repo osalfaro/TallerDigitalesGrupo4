@@ -1,3 +1,4 @@
+ABCD son los 4 bits de entrada, A es el mas significativo
 Ecuaciones:
 a = A'B'C'D + A'BC'D' + AB'CD + ABC'D
 b = BCD' + ACD + ABD' + A'BC'D
