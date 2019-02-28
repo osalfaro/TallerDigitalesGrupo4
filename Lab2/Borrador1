@@ -4,4 +4,6 @@ a = A'B'C'D + A'BC'D' + AB'CD + ABC'D
 b = BCD' + ACD + ABD' + A'BC'D
 c = ABD' + ABC + A'B'CD'
 d = BCD + A'B'C'D + A'BC'D' + AB'CD'
-f = 
+e = A'D + B'C'D + A'BC'
+f = A'B'D + A'B'C + A'CD + ABC'D
+g= A'B'C' + A'BCD + ABC'D'
