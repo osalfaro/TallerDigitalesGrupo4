@@ -1,0 +1,4 @@
+Ecuaciones:
+a = A'B'C'D + A'BC'D' + AB'CD + ABC'D
+b = BCD' + ACD + ABD' + A'BC'D
+c = 
