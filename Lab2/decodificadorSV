@@ -1,1 +1,8 @@
-
+module Deco7segmentos(bin, a,b,c,d,e,f,g);
+    input [3:0]bin;
+    output logic a,b,c,d,e,f,g;
+    
+    assign a = (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
+    
+     
+endmodule
