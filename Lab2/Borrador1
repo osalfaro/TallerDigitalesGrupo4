@@ -1,8 +1,9 @@
 ABCD son los 4 bits de entrada, A es el mas significativo
 Ecuaciones:
 a = A'B'C'D + A'BC'D' + AB'CD + ABC'D
-assign a = (!bin[3] && !bin[2] && !bin[1] && bin[0]) | (!bin[3] && bin[2] && !bin[1] && !bin[0]) | (bin[3] && !bin[2] && bin[1] && bin[0]) | (bin[3] && bin[2] && !bin[1] && bin[0])
+assign a = (!bin[3] && !bin[2] && !bin[1] && bin[0]) | (!bin[3] && bin[2] && !bin[1] && !bin[0]) | (bin[3] && !bin[2] && bin[1] && bin[0]) | (bin[3] && bin[2] && !bin[1] && bin[0]);
 b = BCD' + ACD + ABD' + A'BC'D
+assign b = (bin[2] && bin[1] && !bin[0]) | (bin[3] && bin[1] && bin[0]) | (bin[3] && bin[2] && !bin[0]) | (!bin[3] && bin[2] && !bin[1] && bin[0]);
 c = ABD' + ABC + A'B'CD'
 d = BCD + A'B'C'D + A'BC'D' + AB'CD'
 e = A'D + B'C'D + A'BC'
