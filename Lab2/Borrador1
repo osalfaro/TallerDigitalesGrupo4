@@ -7,6 +7,7 @@ assign b = (bin[2] && bin[1] && !bin[0]) | (bin[3] && bin[1] && bin[0]) | (bin[3
 c = ABD' + ABC + A'B'CD'
 assign c = (bin[3] && bin[2] && !bin[0]) | (bin[3] && bin[2] && bin[1]) | (!bin[3] && !bin[2] && bin[1] && !bin[0]);
 d = BCD + A'B'C'D + A'BC'D' + AB'CD'
+assign d = (bin[2] && bin[1] && bin[0]) | (!bin[3] && !bin[2] && !bin[1] && bin[0]) | (!bin[3] && bin[2] && !bin[1] && !bin[0]) | (bin[3] && !bin[2] && bin[1] && !bin[0]);
 e = A'D + B'C'D + A'BC'
 f = A'B'D + A'B'C + A'CD + ABC'D
 g= A'B'C' + A'BCD + ABC'D'
