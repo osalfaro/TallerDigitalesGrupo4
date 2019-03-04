@@ -1,1 +1,18 @@
+--Sumador de 1 bit.
 
+entity SumadorC1Bit is
+port(a,b,cin:in STD_LOGIC;
+        cout, d: out STD_LOGIC);
+end;
+
+architecture Structural of SumadorC1Bit is
+
+begin
+process(all)
+    begin
+    cout <= (a and b) or (cin and (a xor b));
+    d <= cin xor (a xor b);
+
+
+end process;
+end Structural;
