@@ -1,0 +1,67 @@
+module TestBenchDeco();
+    logic a,b,c,d,e,f,g;
+    logic [3:0] bin;
+    
+    Deco7segmentos dut(
+    .a(a),
+    .b(b),
+    .c(c),
+    .d(d),
+    .e(e),
+    .f(f),
+    .g(g),
+    .bin(bin)
+    );
+    
+    initial begin
+    bin[3] = 0; bin[2] = 0; bin[1] = 0; bin [0] = 0; #10; // el número entrante es cero
+    assert (a === 0 && b === 0 && c == 0 && d == 0 && e == 0 && f == 0 && g == 1) else $error("0000 failed");
+    
+     bin[3] = 0; bin[2] = 0; bin[1] = 0; bin [0] = 1; #10; //número entrante es uno
+     assert (a === 1 && b === 0 && c == 0 && d == 1 && e == 1 && f == 1 && g == 1) else $error("0001 failed");
+     
+     bin[3] = 0; bin[2] = 0; bin[1] = 1; bin [0] = 0; #10; //número entrante es dos
+     assert (a === 0 && b === 0 && c == 1 && d == 0 && e == 0 && f == 1 && g == 0) else $error("0010 failed");
+     
+      bin[3] = 0; bin[2] = 0; bin[1] = 1; bin [0] = 1; #10; //número entrante es tres
+      assert (a === 0 && b === 0 && c == 0 && d == 0 && e == 1 && f == 1 && g == 0) else $error("0011 failed");
+      
+      bin[3] = 0; bin[2] = 1; bin[1] = 0; bin [0] = 0; #10; //número entrante es cuatro
+      assert (a === 1 && b === 0 && c == 0 && d == 1 && e == 1 && f == 0 && g == 0) else $error("0100 failed");
+      
+      bin[3] = 0; bin[2] = 1; bin[1] = 0; bin [0] = 1; #10; //número entrante es cinco
+      assert (a === 0 && b === 1 && c == 0 && d == 0 && e == 1 && f == 0 && g == 0) else $error("0101 failed");
+      
+      bin[3] = 0; bin[2] = 1; bin[1] = 1; bin [0] = 0; #10; //número entrante es seis
+      assert (a === 0 && b === 1 && c == 0 && d == 0 && e == 0 && f == 0 && g == 0) else $error("0110 failed");
+      
+      bin[3] = 0; bin[2] = 1; bin[1] = 1; bin [0] = 1; #10; //número entrante es siete
+      assert (a === 0 && b === 0 && c == 0 && d == 1 && e == 1 && f == 1 && g == 1) else $error("0110 failed");
+      
+      bin[3] = 1; bin[2] = 0; bin[1] = 0; bin [0] = 0; #10; //número entrante es ocho
+      assert (a === 0 && b === 0 && c == 0 && d == 0 && e == 0 && f == 0 && g == 0) else $error("1000 failed");
+      
+      bin[3] = 1; bin[2] = 0; bin[1] = 0; bin [0] = 1; #10; //número entrante es nueve
+      assert (a === 0 && b === 0 && c == 0 && d == 0 && e == 1 && f == 0 && g == 0) else $error("1001 failed");
+      
+      bin[3] = 1; bin[2] = 0; bin[1] = 1; bin [0] = 0; #10; // número entrante es 10, letra A
+      assert (a === 0 && b === 0 && c == 0 && d == 1 && e == 0 && f == 0 && g == 0) else $error("1010 failed");
+      
+      bin[3] = 1; bin[2] = 0; bin[1] = 1; bin [0] = 1; #10; // número entrante es 11, letra B
+      assert (a === 1 && b === 1 && c == 0 && d == 0 && e == 0 && f == 0 && g == 0) else $error("1011 failed");
+      
+      bin[3] = 1; bin[2] = 1; bin[1] = 0; bin [0] = 0; #10; // número entrante es 12, letra C
+      assert (a === 0 && b === 1 && c == 1 && d == 0 && e == 0 && f == 0 && g == 1) else $error("1100 failed");
+            
+      bin[3] = 1; bin[2] = 1; bin[1] = 0; bin [0] = 1; #10; // número entrante es 13, letra D
+      assert (a === 1 && b === 0 && c == 0 && d == 0 && e == 0 && f == 1 && g == 0) else $error("1101 failed");      
+     
+      bin[3] = 1; bin[2] = 1; bin[1] = 1; bin [0] = 0; #10; // número entrante es 14, letra E
+      assert (a === 0 && b === 1 && c == 1 && d == 0 && e == 0 && f == 0 && g == 0) else $error("1110 failed");
+      
+      bin[3] = 1; bin[2] = 1; bin[1] = 1; bin [0] = 1; #10; // número entrante es 1F, letra F
+            assert (a === 0 && b === 1 && c == 1 && d == 1 && e == 0 && f == 0 && g == 0) else $error("1111 failed");
+         
+    end
+    
+endmodule
