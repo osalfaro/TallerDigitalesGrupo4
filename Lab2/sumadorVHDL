@@ -16,3 +16,17 @@ process(all)
 
 end process;
 end Structural;
+
+
+--Sumador Completo 4 bits (En proceso)
+entity SumadorC4Bits is
+    port(A0,A1,A2,A3,B0,B1,B2,B3,Cin0:in STD_LOGIC;
+        D0,D1,D2,D3, Cout:out STD_LOGIC);
+end;
+
+architecture Structural of SumadorC4Bits is
+
+begin
+
+
+end Structural;
