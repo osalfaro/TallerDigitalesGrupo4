@@ -1,8 +1,8 @@
 --Sumador de 1 bit.
 
-entity SumadorC1Bit is
-port(a,b,cin:in STD_LOGIC;
-        cout, d: out STD_LOGIC);
+entity SumadorC1Bit is  --Se define la estructura del sumador de 1 bit.
+port(a,b,cin:in STD_LOGIC;  --Entradas del sumador
+        cout, d: out STD_LOGIC); --Salidas del sumador
 end;
 
 architecture Structural of SumadorC1Bit is
@@ -10,32 +10,32 @@ architecture Structural of SumadorC1Bit is
 begin
 process(all)
     begin
-    cout <= (a and b) or (cin and (a xor b));
-    d <= cin xor (a xor b);
+    cout <= (a and b) or (cin and (a xor b)); --Ecuacion logica para el acarreo de salida del sumador
+    d <= cin xor (a xor b); --Ecuacion logica para el bit de salida del sumador
 
 
 end process;
 end Structural;
 
 
---Sumador Completo 4 bits (En proceso)
+--Sumador Completo 4 bits
 entity SumadorC4Bits is
     port(A,B: in STD_LOGIC_VECTOR (3 downto 0);
-        Ci:in STD_LOGIC;
+        Ci:in STD_LOGIC;                --Entradas del sumador de 4 bits
         D:out STD_LOGIC_VECTOR (3 downto 0);
-        Co:out STD_LOGIC);
+        Co:out STD_LOGIC);              --Salidas del suamador de 4 bits
 end;
 
 architecture Structural of SumadorC4Bits is
 
-component SumadorC1Bit is
+component SumadorC1Bit is               --Definicion (implementacion) del sumador de 1 bit al codigo del sumador de 4 bits
     port(a,b,cin:in STD_LOGIC;
         cout, d: out STD_LOGIC);
 end component;
 
-signal C: STD_LOGIC_VECTOR (3 downto 0);
+signal C: STD_LOGIC_VECTOR (3 downto 0);        --Bus de datos que almacenan los bits de acarreo
 
-begin
+begin   --Cada Sumador(i) ejecuta la suma bit a bit con su respectivo bit de acarreo. 
 Sumador1 : SumadorC1Bit port map (A(0), B(0), Ci, C(1), D(0));
 Sumador2 : SumadorC1Bit port map (A(1), B(1), C(1), C(2), D(1));
 Sumador3 : SumadorC1Bit port map (A(2), B(2), C(2), C(3), D(2));
