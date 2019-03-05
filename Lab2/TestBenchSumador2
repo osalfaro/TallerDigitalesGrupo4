@@ -1,0 +1,66 @@
+entity Sim_Adder_4_Bits is
+end Sim_Adder_4_Bits;
+
+architecture Behavioral of Sim_Adder_4_Bits is
+
+    COMPONENT Adder_4_Bits 
+    PORT (
+          A : IN std_logic_vector (3 downto 0);
+          B : IN std_logic_vector (3 downto 0);
+          Ci : IN std_logic;
+          S : OUT std_logic_vector (3 downto 0);
+          Co : OUT std_logic
+          );
+    END COMPONENT;
+    
+--Inputs
+ 
+signal A : std_logic_vector (3 downto 0) := (others => '0');
+signal B : std_logic_vector (3 downto 0) := (others => '0');
+signal Ci : std_logic := '0';
+    
+-- Outputs
+
+signal S : std_logic_vector (3 downto 0);
+signal Co : std_logic;
+
+constant period : time := 10 ns;
+    
+begin
+
+   uut: Adder_4_bits PORT MAP (
+            A => A,
+            B => B,
+            Ci => Ci,
+            S => S,
+            Co => Co
+            );
+            
+    stim_proc: process
+    begin
+    
+        A <= "1010";
+        B <= "0101";
+        Ci <= '0';
+        
+        wait for period;
+        A <= "1001";
+        B <= "0001";
+        
+        wait for period;
+        A <= "0111";
+        B <= "0111";
+        
+        wait for period;
+        A <= "1111";
+        B <= "1111";
+        
+        wait for period;
+        A <= "0000";
+        B <= "0000";
+        
+        
+        wait;
+    end process;
+    
+end Behavioral;
