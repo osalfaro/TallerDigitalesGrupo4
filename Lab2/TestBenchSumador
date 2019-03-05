@@ -1,1 +1,5 @@
 --TestBenchSumador
+entity SumadorC4Bits_TestBench is
+end SumadorC4Bits_TestBench;
+
+architecture 
