@@ -1,1 +1,27 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.all;
+use ieee.std_logic_unsigned.all;
 
+entity ContadorNbits is
+generic (nBits:integer:=3); --valor parametizable
+port(
+clk, reset:in std_logic;
+Q:inout std_logic_vector (nBits-1 downto 0) --la salida Q debe ser tipo "inout"
+);
+end ContadorNbits;
+
+architecture behavioral of ContadorNbits is
+
+begin
+process (clk) begin
+if(rising_edge(clk)) then
+    if(reset='1') then
+        Q<=(others=>'0'); --asigna 0 en todas las posiciones de Q
+    else
+        Q<=Q + 1;
+    end if;
+end if;
+end process;
+
+end behavioral;
