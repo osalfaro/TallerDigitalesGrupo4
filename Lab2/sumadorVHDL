@@ -40,6 +40,8 @@ entity SumadorC4Bits is
         
 end SumadorC4Bits;
 
+
+
 architecture Structural of SumadorC4Bits is
 
 component SumadorC1Bit is
@@ -56,3 +58,58 @@ Sumador3 : SumadorC1Bit port map (A(2), B(2), C(2), C(3), D(2));
 Sumador4 : SumadorC1Bit port map (A(3), B(3), C(3), Co, D(3));
 
 end Structural;
+
+-- Instancia deco-sumador
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 06.03.2019 15:10:00
+// Design Name: 
+// Module Name: Main
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module Main( 
+    input logic [7:0] bin,
+    input logic AC,
+    output logic led,
+    output logic t,u,v,w,x,y,z
+
+    );
+    
+    logic [3:0] Suma;
+    
+    SumadorC4Bits(
+        bin [7:4], 
+        bin [3:0],
+        AC,
+        Suma,
+        led
+        
+    );
+    
+   Deco7segmentos(
+    .bin(Suma),
+    .a(t),
+    .b(u),
+    .c(v),
+    .d(w),
+    .e(x),
+    .f(y),
+    .g(z)
+    );
+
+endmodule
