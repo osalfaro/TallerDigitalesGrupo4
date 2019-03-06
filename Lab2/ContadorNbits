@@ -1,0 +1,29 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.all;
+use ieee.std_logic_unsigned.all;
+
+entity ContadorNbits is
+generic (nBits:integer:=3); --este valor generico es para la cant. de bits (se debe modificar manualmente en el testbench)
+port(
+--entradas
+clk, reset:in std_logic;
+--bus de salida
+Q:inout std_logic_vector (nBits-1 downto 0):=(others=>'0') --inicializado en cero
+);
+end ContadorNbits;
+
+architecture behavioral of ContadorNbits is
+
+begin
+process (clk) begin
+if(rising_edge(clk)) then --se activa en los flancos positivos del clock
+    if(reset='1') then
+        Q<=(others=>'0'); --asigna 0 en todas las posiciones de Q si Reset se activa (sincrono)
+    else
+        Q<=Q + 1; --si no hay reset, el conteo continua, para esta suma se necesita la libreria std_logic_unsigned
+    end if;
+end if;
+end process;
+
+end behavioral;
