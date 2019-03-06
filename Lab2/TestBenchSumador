@@ -1,44 +1,48 @@
-entity Sim_Adder_4_Bits is
-end Sim_Adder_4_Bits;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
 
-architecture Behavioral of Sim_Adder_4_Bits is
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
 
-    COMPONENT Adder_4_Bits 
-    PORT (
-          A : IN std_logic_vector (3 downto 0);
-          B : IN std_logic_vector (3 downto 0);
-          Ci : IN std_logic;
-          S : OUT std_logic_vector (3 downto 0);
-          Co : OUT std_logic
-          );
-    END COMPONENT;
-    
---Inputs
- 
-signal A : std_logic_vector (3 downto 0) := (others => '0');
-signal B : std_logic_vector (3 downto 0) := (others => '0');
-signal Ci : std_logic := '0';
-    
--- Outputs
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
 
-signal S : std_logic_vector (3 downto 0);
-signal Co : std_logic;
+entity PruebaSumador is
+--  Port ( );
+end PruebaSumador;
 
-constant period : time := 10 ns;
-    
+architecture Test of PruebaSumador is
+    component SumadorC4Bits is
+    port(
+        A,B: in STD_LOGIC_VECTOR (3 downto 0);
+        Ci:in STD_LOGIC;
+        D:out STD_LOGIC_VECTOR (3 downto 0);
+        Co:out STD_LOGIC);
+    end component;
+
+--Entradas
+signal A: STD_LOGIC_VECTOR (3 DOWNTO 0) := (others => '0');
+signal B: STD_LOGIC_VECTOR (3 DOWNTO 0) := (others => '0');
+signal Ci: STD_LOGIC := '0';
+
+--Salidas
+signal D: STD_LOGIC_VECTOR (3 DOWNTO 0);
+signal Co: STD_LOGIC;
+
+constant period: time := 10ns;
+
 begin
-
-   uut: Adder_4_bits PORT MAP (
+    uut: SumadorC4Bits port map (
             A => A,
             B => B,
             Ci => Ci,
-            S => S,
-            Co => Co
-            );
-            
-    stim_proc: process
-    begin
-    
+            D => D,
+            Co => Co);
+        stim_proc: process
+        begin 
         A <= "1010";
         B <= "0101";
         Ci <= '0';
@@ -59,8 +63,8 @@ begin
         A <= "0000";
         B <= "0000";
         
-        
         wait;
     end process;
-    
-end Behavioral;
+
+
+end Test;
