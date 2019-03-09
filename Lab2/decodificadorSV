@@ -11,4 +11,11 @@ module Deco7segmentos(bin, a,b,c,d,e,f,g);
     assign f = (~bin[3] & ~bin[2] & bin[0]) | (~bin[3] & ~bin[2] & bin[1]) | (~bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
     assign g = (~bin[3] & ~bin[2] & ~bin[1]) | (~bin[3] & bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & ~bin[0]);
    
+   assign AN7 = 0;
+   assign AN6 = 0;
+   assign AN5 = 0;
+   assign AN4 = 0;
+   assign AN3 = 0;
+   assign AN2 = 0;
+   assign AN1 = 0;
 endmodule
