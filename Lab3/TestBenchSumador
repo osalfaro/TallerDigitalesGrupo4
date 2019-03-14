@@ -1,0 +1,18 @@
+module TestBench( );
+logic [2:0]a,b;
+logic cin;
+logic [2:0] s;
+logic cout;    
+Sumador dut(a,b,cin,s,cout);
+initial begin
+a=0; b=0; cin=0; #10;
+a=1; #10;
+a=0; b=3; #10;
+a=6; b=4; #10;
+a=6; b=5; #10;
+a=7; b=4; #10;
+a=5; b=5; #10;
+a=7; b=3; #10;
+a=4; b=2; cin=1; #10;
+end
+endmodule
