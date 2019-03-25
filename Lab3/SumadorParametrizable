@@ -1,10 +1,16 @@
-module Sumador #(parameter n=3)(
-input logic [n-1:0] a,b,
+//SUMADOR PARAMETRIZABLE (COMPORTAMIENTO)
+module SumadorNbits #(parameter n=3)
+(
+input logic [n-1:0] a,b, //datos de entrada
 input logic cin, 
-output logic [n-1:0] s,
+output logic [n-1:0] s, //dato de salida (total)
 output logic cout
-    );
-    assign cout = (a && b) || (cin && (a ^ b));
-    assign s = cin ^ (a ^ b);
-    
+);
+
+    logic [n:0] resultado; //se utiliza para almacenar la suma con todo y bit de acarreo, por eso es de n+1 bits
+
+    assign resultado = a+b+cin; //se realiza la suma
+    assign s = resultado[n-1:0]; //los primeros n bits se guardan en s
+    assign cout = resultado[n]; //el bit n+1 se guarda como acarreo de salida
+
 endmodule
