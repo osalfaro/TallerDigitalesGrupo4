@@ -1,0 +1,14 @@
+//Testbench complemento a2
+module TestBench( );
+logic [4:0] in;
+logic [4:0] out;  
+ComplementoA2Nbits #(5) dut(in,out);
+initial begin
+in=6; #10;
+in=5; #10;
+in=4; #10;
+in=3; #10;
+in=2; #10;
+in=1; #10;
+end
+endmodule
