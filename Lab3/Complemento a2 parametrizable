@@ -1,0 +1,10 @@
+//COMPLEMENTO A2 PARAMETRIZABLE (COMPORTAMIENTO)
+module ComplementoA2Nbits #(parameter n=3)
+(
+input logic [n-1:0] in,
+output logic [n-1:0] out
+);
+
+assign out = ~in + 1; //se invierte la entrada y se le suma 1
+
+endmodule
