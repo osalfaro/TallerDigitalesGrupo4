@@ -1,0 +1,16 @@
+//Restador PARAMETRIZABLE (COMPORTAMIENTO)
+//Realiza suma en complemento a2
+module RestadorNbits #(parameter n=3)
+(
+input logic [n-1:0] a,b, //datos de entrada
+input logic cin, 
+output logic [n-1:0] s, //dato de salida (diferencia)
+output logic cout
+);
+
+logic [n-1:0] c; //para hacer el complemento a2
+
+ComplementoA2Nbits #(n) complemento (b,c); //entra b, sale b en complemento a2 (c)
+SumadorNbits #(n) suma (a,c,cin,s,cout); //realiza la suma de a+c
+
+endmodule
