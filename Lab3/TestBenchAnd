@@ -1,0 +1,13 @@
+module TestBench();
+logic [2:0] a,b;
+logic [2:0] c;
+
+compAnd dut(a,b,c);
+initial begin
+a=0; b=0; #10;
+a=2; b=7; #10;
+a=5; b=4; #10;
+a=1; b=6; #10;
+a=0; b=7; #10;
+end
+endmodule
