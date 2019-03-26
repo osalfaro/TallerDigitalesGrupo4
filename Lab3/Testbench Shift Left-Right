@@ -1,0 +1,25 @@
+module TestBench( );
+logic [5-1:0] a,b; //datos de entrada
+logic AluFlagIn;
+logic [5-1:0] c; //dato de salida
+
+ShiftRight #(5) dut(a,b,AluFlagIn,c); //para 5 bits
+//ShiftLeft #(5) dut(a,b,AluFlagIn,c);
+
+initial begin
+
+a=6; AluFlagIn=0;
+for (int i=0; i<=6; i++)
+begin
+b=i; #10;
+end
+
+AluFlagIn=1;
+for (int i=0; i<=6; i++)
+begin
+b=i; #10;
+end
+
+end 
+
+endmodule
