@@ -1,0 +1,20 @@
+module TestBench();
+logic [2:0] a,b;
+logic  ALUFlagIn, cout;
+logic [2:0] salida;
+
+decrementoParametrizable dut(a,b,ALUFlagIn,cout,salida);
+initial begin
+
+ALUFlagIn = 0;
+a=5; b=2; #10;
+a=0; b=7; #10;
+a=7; b=0; #10;
+
+ALUFlagIn = 1;
+a=5; b=3; #10;
+a=0; b=2; #10;
+a=7; b=0; #10;
+end
+
+endmodule
