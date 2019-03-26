@@ -1,0 +1,30 @@
+//Modulo ShiftRight Parametrizable
+module ShiftRight #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+input logic AluFlagIn,
+output logic [n-1:0] c
+);
+
+logic [n-1:0] aux=0;
+
+always @(*) //Para poder utilizar el IF
+begin
+    if (AluFlagIn==0) //corrimiento con ceros
+        begin
+        assign c = a>>b;
+        end
+    else //corrimiento con unos
+        begin
+        if (b<n)
+            begin
+            assign aux= ~((2**(n-b))-1); //se calcula un aux que tiene 'unos' en la posicion necesaria
+            end
+        else
+            begin
+            assign aux=~0;
+            end
+        assign c = (a>>b) | aux; //corre a la der y hace un or con la cantidad de unos necesaria
+        end
+end
+endmodule
