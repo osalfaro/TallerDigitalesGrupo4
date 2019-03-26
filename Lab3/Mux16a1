@@ -1,0 +1,10 @@
+module Mux16a1 #(parameter n=4)(
+    input logic [n-1:0] a,b,c,d,e,f,g,h,i,j,
+    input logic [3:0] sel,
+    output logic [n-1:0] salida);
+    
+    logic [n-1:0] buffer = 'bz; 
+    
+    
+    assign salida = sel[3] ? (sel[2]?(sel[1]?(sel[0]? buffer:buffer):(sel[0]? j:i)):(sel[1]? (sel[0]? h:g):(sel[0]? f:e))):(sel[2]?(sel[1]?(sel[0]? buffer:buffer):(sel[0]? buffer:buffer)):(sel[1]? (sel[0]? d:c):(sel[0]? b:a)));
+endmodule
