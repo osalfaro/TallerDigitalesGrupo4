@@ -1,0 +1,18 @@
+module TestBench();
+logic [3:0] a,b,c,d,e,f,g,h,i,j;
+logic [3:0] sel;
+logic [3:0] salida;
+
+Mux16a1 dut(a,b,c,d,e,f,g,h,i,j,sel,salida);
+initial begin
+sel=0; a = 0; b= 1;c=2;d=3;e=4;f=5;g=6;h=7;i=8;j=9; #10;
+/*sel=1; a = 0; b= 1;c=2;d=3;e=4;f=5;g=6;h=7;i=8;j=9; #10;
+sel=3; a = 0; b= 1;c=2;d=3;e=4;f=5;g=6;h=7;i=8;j=9; #10;
+sel=8; a = 0; b= 1;c=2;d=3;e=4;f=5;g=6;h=7;i=8;j=9; #10;
+sel=13; a = 0; b= 1;c=2;d=3;e=4;f=5;g=6;h=7;i=8;j=9; #10; */
+end
+always begin
+#1
+sel = sel+1;
+end
+endmodule
