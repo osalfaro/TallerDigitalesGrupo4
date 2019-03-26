@@ -1,0 +1,12 @@
+module incrementoParametrizable #(parameter n=3)(
+        input logic [n-1:0] a,b,
+        input logic ALUFlagIn,
+        output logic cout,
+        output logic [n-1:0] salida);
+        
+        logic [n-1:0] aux;
+        
+        Mux2a1 #(n) mux (a,b,ALUFlagIn,aux);
+        SumadorNbits #(n) sumador (aux,1,0,salida,cout);
+        
+endmodule
