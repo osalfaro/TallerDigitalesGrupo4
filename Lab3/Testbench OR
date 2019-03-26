@@ -1,0 +1,17 @@
+//Test Bench OR
+module TestBench( );
+logic [5-1:0] a,b; //datos de entrada
+logic [5-1:0] c; //dato de salida
+
+CompuertaOr #(5) dut(a,b,c); //para 5 bits
+
+initial begin
+
+a=5;
+for (int i=0; i<=10; i++)
+begin
+b=i; #10;
+end
+end 
+
+endmodule
