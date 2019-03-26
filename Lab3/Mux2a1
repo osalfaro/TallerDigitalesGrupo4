@@ -1,0 +1,8 @@
+module Mux2a1 #(parameter n=3)(
+        input logic [n-1:0] a,b,
+        input logic sel,
+        output logic [n-1:0] c);
+        
+        assign c = sel? b:a;
+        
+endmodule
