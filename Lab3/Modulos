@@ -1,0 +1,203 @@
+module compAnd #(parameter n=3)(
+   input logic [n-1:0] a,b,
+   output logic [n-1:0] c
+      );
+      
+      assign c = a & b;
+endmodule
+
+module compXor #(parameter n=4)(
+    input logic [n-1:0] a,b,
+    output logic [n-1:0] c
+    );
+    
+    assign c = a^b;
+endmodule
+
+
+module Mux16a1 #(parameter n=4)(
+    input logic [n-1:0] a,b,c,d,e,f,g,h,i,j,
+    input logic [3:0] sel,
+    output tri [n-1:0] salida); //o output logic
+    
+    logic [n-1:0] buffer = 'bz; 
+    
+    
+    assign salida = sel[3] ? (sel[2]?(sel[1]?(sel[0]? buffer:buffer):(sel[0]? j:i)):(sel[1]? (sel[0]? h:g):(sel[0]? f:e))):(sel[2]?(sel[1]?(sel[0]? buffer:buffer):(sel[0]? buffer:buffer)):(sel[1]? (sel[0]? d:c):(sel[0]? b:a)));
+endmodule
+
+module Mux2a1 #(parameter n=3)(
+        input logic [n-1:0] a,b,
+        input logic sel,
+        output logic [n-1:0] c);
+        
+        assign c = sel? b:a;
+        
+endmodule
+
+
+module ComplementoA2Nbits #(parameter n=3)
+(
+input logic [n-1:0] in,
+output logic [n-1:0] out
+);
+
+assign out = ~in + 1; //se invierte la entrada y se le suma 1
+
+endmodule
+
+
+//SUMADOR PARAMETRIZABLE (COMPORTAMIENTO)
+module SumadorNbits #(parameter n=3)
+(
+input logic [n-1:0] a,b, //datos de entrada
+input logic cin, 
+output logic [n-1:0] s, //dato de salida (total)
+output logic cout
+);
+
+    logic [n:0] resultado; //se utiliza para almacenar la suma con todo y bit de acarreo, por eso es de n+1 bits
+
+    assign resultado = a+b+cin; //se realiza la suma
+    assign s = resultado[n-1:0]; //los primeros n bits se guardan en s
+    assign cout = resultado[n]; //el bit n+1 se guarda como acarreo de salida
+
+endmodule
+
+module RestadorNbits #(parameter n=3)
+(
+input logic [n-1:0] a,b, //datos de entrada
+input logic cin, 
+output logic [n-1:0] s, //dato de salida (diferencia)
+output logic cout
+);
+
+logic [n-1:0] c; //para hacer el complemento a2
+
+ComplementoA2Nbits #(n) complemento (b,c); //entra b, sale b en complemento a2 (c)
+SumadorNbits #(n) suma (a,c,cin,s,cout); //realiza la suma de a+c
+
+endmodule
+
+module incrementoParametrizable #(parameter n=3)(
+        input logic [n-1:0] a,b,
+        input logic ALUFlagIn,
+        output logic cout,
+        output logic [n-1:0] salida);
+        
+        logic [n-1:0] aux;
+        
+        Mux2a1 #(n) mux (a,b,ALUFlagIn,aux);
+        SumadorNbits #(n) sumador (aux,1,0,salida,cout);
+        
+endmodule
+
+module decrementoParametrizable #(parameter n=3)(
+        input logic [n-1:0] a,b,
+        input logic ALUFlagIn,
+        output logic cout,
+        output logic [n-1:0] salida);
+        
+        logic [n-1:0] aux;
+        
+        Mux2a1 #(n) mux (a,b,ALUFlagIn,aux);
+        RestadorNbits #(n) sumador (aux,1,0,salida,cout);
+        
+endmodule
+
+module CompuertaNot #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+input logic AluFlagIn,
+output logic [n-1:0] salida
+);
+
+logic [n-1:0] aux;
+
+Mux2a1 #(n) mux (a,b,AluFlagIn,aux);
+assign salida = ~aux;
+
+endmodule
+
+module CompuertaOr #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+output logic [n-1:0] c
+);
+
+assign c = a | b;
+
+endmodule
+
+module ShiftRight #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+input logic AluFlagIn,
+output logic [n-1:0] c
+);
+
+logic [n-1:0] aux=0;
+
+always @(*) //Para poder utilizar el IF
+begin
+    if (AluFlagIn==0) //corrimiento con ceros
+        begin
+        assign c = a>>b;
+        end
+    else //corrimiento con unos
+        begin
+        if (b<n)
+            begin
+            assign aux= ~((2**(n-b))-1); //se calcula un aux que tiene 'unos' en la posicion necesaria
+            end
+        else
+            begin
+            assign aux=~0;
+            end
+        assign c = (a>>b) | aux; //corre a la der y hace un or con la cantidad de unos necesaria
+        end
+end
+endmodule
+
+module ShiftLeft #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+input logic AluFlagIn,
+output logic [n-1:0] c
+);
+
+always @(*) //Para poder utilizar el IF
+begin
+    if (AluFlagIn==0) //corrimiento con ceros
+        begin
+        assign c = a<<b;
+        end
+    else //corrimiento con unos
+        begin
+        assign c = (a<<b) | ((2**b)-1); //corre a la izq y hace un or con la cantidad de unos necesaria
+        end
+end
+endmodule
+
+/*module ALUFlags # (parameter n=3)(
+        input logic [n-1:0] salida,
+        input logic cout,
+        output logic [3:0] ALUFlags);
+        
+        
+        assign ALUFlags[1] = cout; //Bit de acarreo de salida.
+        
+        always @(*)
+        begin
+        if(salida == 0)
+        begin
+        
+        end
+        
+        
+        end
+        
+        
+        
+        
+endmodule*/
