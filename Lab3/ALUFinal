@@ -1,0 +1,43 @@
+module Alu #(parameter n=4)
+(
+    input logic [n-1:0] ALUA, ALUB,
+    input logic ALUFlagIn,
+    input logic [3:0] ALUControl,
+    //output logic ALUFlags [3:0],
+    output logic ALUResult [n-1:0]
+    );
+    
+    logic [n-1:0] aux0;
+    logic [n-1:0] aux1;
+    logic [n-1:0] aux2;
+    logic [n-1:0] aux3;
+    logic [n-1:0] aux4;
+    logic [n-1:0] aux5;
+    logic [n-1:0] aux6;
+    logic [n-1:0] aux7;
+    logic [n-1:0] aux8;
+    logic [n-1:0] aux9;
+    logic c0;
+    logic c1;
+    logic c2;
+    logic c3;
+    
+    //Operaciones Aritmeticas
+    SumadorNbits #(n) sumador(ALUA,ALUB,ALUFlagIn,aux0,c0);
+    RestadorNbits #(n) restador(ALUA,ALUB,ALUFlagIn,aux1,c1);
+    incrementoParametrizable #(n) incremento(ALUA,ALUB,ALUFlagIn,c2,aux2);
+    decrementoParametrizable #(n) decremento(ALUA,ALUB,ALUFlagIn,c3,aux3);
+    
+    //Operaciones Logicas
+    compAnd #(n) compuertaand(ALUA,ALUB,aux4);
+    CompuertaOr #(n) compuertaor(ALUA,ALUB,aux5);
+    CompuertaNot #(n) compuertanot(ALUA,ALUB,ALUFlagIn,aux6);
+    compXor #(n) compuertaxor(ALUA,ALUB,aux7);
+    ShiftLeft #(n) shiftleft(ALUA,ALUB,ALUFlagIn,aux8);
+    ShiftRight #(n) shiftright(ALUA,ALUB,ALUFlagIn,aux9);
+    
+    Mux16a1 #(n) muxsalida(aux0,aux1,aux2,aux3,aux4,aux5,aux6,aux7,aux8,aux9,ALUControl,ALUResult);
+    //Mux16a1 #(n) muxcarry(c0,c1,c2,c3,0,0,0,0,0,0,ALUControl,)
+    
+    
+endmodule
