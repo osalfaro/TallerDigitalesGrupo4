@@ -1,0 +1,14 @@
+//Compuerta NOT parametrizable
+module CompuertaNot #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+input logic AluFlagIn,
+output logic [n-1:0] salida
+);
+
+logic [n-1:0] aux;
+
+Mux2a1 #(n) mux (a,b,AluFlagIn,aux);
+assign salida = ~aux;
+
+endmodule
