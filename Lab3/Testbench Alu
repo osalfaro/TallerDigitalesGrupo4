@@ -1,0 +1,70 @@
+module TestBench( );
+logic [3:0] ALUA, ALUB;
+logic ALUFlagIn;
+logic [3:0] ALUControl;
+//logic ALUFlags [3:0];
+logic ALUResult [3:0];
+
+Alu #(4) dut(ALUA,ALUB,ALUFlagIn,ALUControl,ALUResult);
+
+initial begin
+//SUMA
+ALUA=4; ALUB=2; ALUFlagIn=0; ALUControl=0; #10;
+assert (ALUResult === 6) else $error("000 failed."); 
+//RESTA
+ALUFlagIn=0; ALUControl=1; #10;
+assert (ALUResult === 2) else $error("001 failed."); 
+//INCREMENTO a A
+ALUFlagIn=0; ALUControl=2; #10;
+assert (ALUResult === 5) else $error("002 failed.");
+//INCREMENTO a B
+ALUFlagIn=1; #10;
+assert (ALUResult === 3) else $error("003 failed.");
+//DECREMENTO a A
+ALUFlagIn=0; ALUControl=3; #10;
+assert (ALUResult === 3) else $error("004 failed.");
+//DECREMENTO a B
+ALUFlagIn=1; #10;
+assert (ALUResult === 1) else $error("005 failed.");
+
+ALUFlagIn=0; ALUControl=4; #10;
+assert (ALUResult === 'bz) else $error("006 failed.");
+
+ALUControl=5; #10;
+assert (ALUResult === 'bz) else $error("007 failed.");
+
+ALUControl=6; #10;
+assert (ALUResult === 'bz) else $error("008 failed.");
+
+ALUControl=7; #10;
+assert (ALUResult === 'bz) else $error("009 failed.");
+//AND
+ALUControl=8; #10;
+assert (ALUResult === 0) else $error("010 failed.");
+//OR
+ALUControl=9; #10;
+assert (ALUResult === 6) else $error("011 failed.");
+//NOT A
+ALUFlagIn=0; ALUControl=10; #10;
+assert (ALUResult === 4'ha) else $error("012 failed.");
+//NOT B
+ALUFlagIn=1; ALUControl=10; #10;
+assert (ALUResult === 4'hd) else $error("013 failed.");
+//XOR
+ALUFlagIn=0; ALUControl=11; #10;
+assert (ALUResult === 6) else $error("014 failed.");
+//Shift Left 0
+ALUFlagIn=0; ALUControl=12; #10;
+assert (ALUResult === 0) else $error("015 failed.");
+//Shift Left 1
+ALUFlagIn=1; ALUControl=12; #10;
+assert (ALUResult === 3) else $error("016 failed.");
+//Shift Right 0
+ALUFlagIn=0; ALUControl=13; #10;
+assert (ALUResult === 1) else $error("017 failed.");
+ALUFlagIn=1; ALUControl=13; #10;
+assert (ALUResult === 4'hd) else $error("018 failed.");
+
+end 
+
+endmodule
