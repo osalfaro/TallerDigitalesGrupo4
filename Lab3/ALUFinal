@@ -4,7 +4,7 @@ module Alu #(parameter n=4)
     input logic ALUFlagIn,
     input logic [3:0] ALUControl,
     //output logic ALUFlags [3:0],
-    output logic ALUResult [n-1:0]
+    output logic  [n-1:0]ALUResult
     );
     
     logic [n-1:0] aux0;
