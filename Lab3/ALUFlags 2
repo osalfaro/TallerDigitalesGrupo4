@@ -1,0 +1,44 @@
+module ALUFlags # (parameter n=3) (
+    input logic [n-1:0] MuxSalidas, a, b, //la salida del mux, el dato A y el B
+    input logic acarreo, //la salida del mux de acarreo
+    output logic [3:0] ALUFlags //salida, 4 banderas
+    );
+      
+    always @(*)
+    begin 
+        //negativo:    
+        if ( MuxSalidas[n-1] == 1)
+            ALUFlags[0] = 1;     
+        else 
+            ALUFlags[0] = 0;
+        
+        //zero:            
+        if (MuxSalidas == 0)
+            ALUFlags[1] = 1;
+        else 
+            ALUFlags[1] = 0;
+        
+        //carry:
+        ALUFlags[2]= acarreo;   
+        
+        //para overflow:
+        if(a[n-1]==0 & b[n-1]==0)
+            begin
+            if (MuxSalidas[n-1]==1)
+                ALUFlags[3]=1;
+            else
+                ALUFlags[3]=0;
+            end
+        else if(a[n-1]==1 & b[n-1]==1)
+            begin
+            if (MuxSalidas[n-1]==0)
+                ALUFlags[3]=1;
+            else
+                ALUFlags[3]=0;
+            end
+        else
+            begin
+            ALUFlags[3]=0;
+            end
+    end
+endmodule
