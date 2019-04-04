@@ -1,0 +1,28 @@
+module ALUFlags # (parameter n=3) (
+    input logic [n-1:0] MuxSalidas,
+    input logic acarreo,
+    output logic Z,
+    output logic Over=0,
+    output logic Negativo,
+    output logic Acarreo,
+    output logic [n:0] V );
+      
+    always @(*)
+    begin     
+        if ( MuxSalidas[n-1] == 1)
+            Negativo = 1;     
+        else 
+            Negativo = 0;
+                      
+        if (MuxSalidas == 0)
+            Z = 1;
+        else 
+            Z = 0;
+        V = MuxSalidas;   
+        Acarreo = acarreo;
+        if(V<(-(2**(n-1))) | V>=((2**(n-1))-1))
+            Over=1;        
+    end
+       
+    
+endmodule
