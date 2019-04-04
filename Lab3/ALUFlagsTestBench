@@ -1,0 +1,19 @@
+module FlagsTest();
+    logic [2:0] MuxSalidas;
+    logic acarreo;
+    logic Z;
+    logic Over;
+    logic Negativo;
+    logic Acarreo;
+    logic [3:0]V;
+    
+    ALUFlags #(3) dut(MuxSalidas, acarreo, Z, Over, Negativo, Acarreo, V);
+    initial begin
+    MuxSalidas = 4; #10;
+    MuxSalidas = 5; #10;
+    MuxSalidas = 2; #10;
+    MuxSalidas = 1; #10;
+    acarreo = 1; #10;
+    MuxSalidas = 0; #10;
+    end
+endmodule
