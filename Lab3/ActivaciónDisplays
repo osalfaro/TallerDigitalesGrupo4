@@ -1,0 +1,59 @@
+module DecoSegmetosALU(input clock_100MHz, //entrada de relog
+   // input logic reset,//reset
+    input logic Negativo,
+    input logic Cero, 
+    input logic Over,
+    input logic Acarreo,
+    input logic [3:0] Entrada2,//Digito en binario para pasar a decimal
+    output logic [6:0] LedOut);
+    //output logic a,b,c,d,e,f,g); //salidas para asignar a los leds del display no poner atención
+    logic [16:0] refresh_clock;
+    logic [3:0] bin; //Se usa para encender los leds
+    /*always @(posedge clock_100MHz or posedge reset) no poner atención
+        begin
+             if (reset == 1)
+                refresh_clock = 0;
+             else 
+                refresh_clock = refresh_clock +1;
+        end*/ 
+     always @(posedge clock_100MHz) //pulso de relog para que se encienda un display a la vez
+        begin
+            //Para FlagNegativo
+            if (Negativo == 1)
+                bin = 4'b0001;
+            else 
+                bin = 4'b0000;
+            //FlagCero
+            if (Cero == 1)
+                bin = 4'b0001;
+            else 
+                bin = 4'b0000;
+            //FlagOverflow
+            if(Over == 1)
+                bin = 4'b0001;
+            else 
+                bin = 4'b0000;
+            //FlagAcarreo
+            if (Acarreo == 1)
+                bin = 4'b0001;
+            else
+                bin = 4'b0000;        
+        end 
+        //no poner atención
+        /*assign a = (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
+        assign b = (bin[2] & bin[1] & ~bin[0]) | (bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[0]) | (~bin[3] & bin[2] & ~bin[1] & bin[0]);
+        assign c = (bin[3] & bin[2] & ~bin[0]) | (bin[3] & bin[2] & bin[1]) | (~bin[3] & ~bin[2] & bin[1] & ~bin[0]);
+        assign d = (bin[2] & bin[1] & bin[0]) | (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & ~bin[0]);
+        assign e = (~bin[3] & bin[0]) | (~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1]);
+        assign f = (~bin[3] & ~bin[2] & bin[0]) | (~bin[3] & ~bin[2] & bin[1]) | (~bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
+        assign g = (~bin[3] & ~bin[2] & ~bin[1]) | (~bin[3] & bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & ~bin[0]);
+        */
+    always @(*)
+        begin
+            case (bin) //Para encender los 7segmentos
+                4'b0000: LedOut = 7'b0000001; //cero
+                4'b0001: LedOut = 7'b1001111; //uno
+                default LedOut =  7'b0000001; //pordefault ceri
+            endcase
+        end 
+endmodule
