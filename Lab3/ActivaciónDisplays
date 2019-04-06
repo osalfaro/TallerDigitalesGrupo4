@@ -4,11 +4,12 @@ module DecoSegmetosALU(input clock_100MHz, //entrada de relog
     input logic Cero, 
     input logic Over,
     input logic Acarreo,
+    input logic ActivarEntrada2,
     input logic [3:0] Entrada2,//Digito en binario para pasar a decimal
-    output logic [6:0] LedOut);
-    //output logic a,b,c,d,e,f,g); //salidas para asignar a los leds del display no poner atención
-    logic [16:0] refresh_clock;
+    output logic [6:0] LedOut); //salidas para asignar a los leds del display 
+    //logic [16:0] refresh_clock;
     logic [3:0] bin; //Se usa para encender los leds
+    logic a,b,c,d,e,f,g;
     /*always @(posedge clock_100MHz or posedge reset) no poner atención
         begin
              if (reset == 1)
@@ -38,22 +39,32 @@ module DecoSegmetosALU(input clock_100MHz, //entrada de relog
                 bin = 4'b0001;
             else
                 bin = 4'b0000;        
+                
+            //CasoDigitoBinario a Decimal
+            if(ActivarEntrada2==1)
+                bin = Entrada2;
+                
         end 
-        //no poner atención
-        /*assign a = (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
-        assign b = (bin[2] & bin[1] & ~bin[0]) | (bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[0]) | (~bin[3] & bin[2] & ~bin[1] & bin[0]);
-        assign c = (bin[3] & bin[2] & ~bin[0]) | (bin[3] & bin[2] & bin[1]) | (~bin[3] & ~bin[2] & bin[1] & ~bin[0]);
-        assign d = (bin[2] & bin[1] & bin[0]) | (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & ~bin[0]);
-        assign e = (~bin[3] & bin[0]) | (~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1]);
-        assign f = (~bin[3] & ~bin[2] & bin[0]) | (~bin[3] & ~bin[2] & bin[1]) | (~bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
-        assign g = (~bin[3] & ~bin[2] & ~bin[1]) | (~bin[3] & bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & ~bin[0]);
-        */
+  
     always @(*)
         begin
             case (bin) //Para encender los 7segmentos
                 4'b0000: LedOut = 7'b0000001; //cero
                 4'b0001: LedOut = 7'b1001111; //uno
-                default LedOut =  7'b0000001; //pordefault ceri
+                default LedOut =  7'b0000001; //pordefault cero
             endcase
+            //CasoDigitoBinario a Decimal
+            if(bin==Entrada2)
+                begin
+                     LedOut[0] = (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
+                     LedOut[1] = (bin[2] & bin[1] & ~bin[0]) | (bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[0]) | (~bin[3] & bin[2] & ~bin[1] & bin[0]);
+                     LedOut[2] = (bin[3] & bin[2] & ~bin[0]) | (bin[3] & bin[2] & bin[1]) | (~bin[3] & ~bin[2] & bin[1] & ~bin[0]);
+                     LedOut[3] = (bin[2] & bin[1] & bin[0]) | (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & ~bin[0]);
+                     LedOut[4] = (~bin[3] & bin[0]) | (~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1]);
+                     LedOut[5] = (~bin[3] & ~bin[2] & bin[0]) | (~bin[3] & ~bin[2] & bin[1]) | (~bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
+                     LedOut[6] = (~bin[3] & ~bin[2] & ~bin[1]) | (~bin[3] & bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & ~bin[0]);
+                    
+                end
+            
         end 
 endmodule
