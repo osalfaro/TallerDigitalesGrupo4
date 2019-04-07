@@ -6,65 +6,463 @@ module DecoSegmetosALU(input clock_100MHz, //entrada de relog
     input logic Acarreo,
     input logic ActivarEntrada2,
     input logic [3:0] Entrada2,//Digito en binario para pasar a decimal
-    output logic [6:0] LedOut); //salidas para asignar a los leds del display 
-    //logic [16:0] refresh_clock;
+    output logic [6:0] LedOut=0,//salidas para asignar a los leds del display 
+    output logic [7:0] AnodoActivo,
+    output logic [4:0] Led);
+
     logic [3:0] bin; //Se usa para encender los leds
-    logic a,b,c,d,e,f,g;
-    /*always @(posedge clock_100MHz or posedge reset) no poner atención
-        begin
-             if (reset == 1)
-                refresh_clock = 0;
-             else 
-                refresh_clock = refresh_clock +1;
-        end*/ 
-     always @(posedge clock_100MHz) //pulso de relog para que se encienda un display a la vez
+    logic [3:0] bin2;
+    logic [3:0] bin3;
+    logic [3:0] bin4;
+    logic [3:0] bin5;
+    logic [4:0] ActivarAnodo;
+    logic [8:0] Contador=0;
+    
+ 
+     //always @(posedge clock_100MHz) //pulso de relog para que se encienda un display a la vez
+       /*always @(*)
         begin
             //Para FlagNegativo
-            if (Negativo == 1)
-                bin = 4'b0001;
-            else 
-                bin = 4'b0000;
+            case(Negativo)
+                1'b1:
+                 bin = 4'b0001;
+                1'b0:
+                 bin = 4'b0000;
+            endcase
             //FlagCero
-            if (Cero == 1)
-                bin = 4'b0001;
-            else 
-                bin = 4'b0000;
+            case(Cero)
+                1'b1:
+                    bin2 = 4'b0001;
+                1'b0:
+                    bin2 = 4'b0000;
+            endcase
             //FlagOverflow
-            if(Over == 1)
-                bin = 4'b0001;
-            else 
-                bin = 4'b0000;
+            case(Over)
+                1'b1: 
+                    bin3 = 4'b0001;
+               1'b0:
+                bin3 = 4'b0000;
+            endcase
             //FlagAcarreo
-            if (Acarreo == 1)
-                bin = 4'b0001;
-            else
-                bin = 4'b0000;        
-                
-            //CasoDigitoBinario a Decimal
-            if(ActivarEntrada2==1)
-                bin = Entrada2;
-                
-        end 
-  
-    always @(*)
-        begin
-            case (bin) //Para encender los 7segmentos
-                4'b0000: LedOut = 7'b0000001; //cero
-                4'b0001: LedOut = 7'b1001111; //uno
-                default LedOut =  7'b0000001; //pordefault cero
+            case(Acarreo)
+                1'b1:
+                    bin4 = 4'b0001;
+                1'b0:
+                    bin4 = 4'b0000; 
             endcase
             //CasoDigitoBinario a Decimal
-            if(bin==Entrada2)
+            case(ActivarEntrada2)
+               1'b1:
+                   bin5 = 4'b0001;
+               1'b0: 
+                    bin5 = 4'b0000;
+            endcase
+                
+        end 
+        */
+        always @(posedge clock_100MHz)
+          begin
+            //Para FlagNegativo  
+                  case(Negativo)
+                    1'b1:
+                       begin
+                        ActivarAnodo = 4'b0000;
+                        Led[0] = 1'b0;
+                       end                 
+                    1'b0:
+                       Led[0] = 1'b1;
+                  endcase
+                  
+             //FlagCero
+                 case(Cero)
+                    1'b1:
+                     begin
+                     ActivarAnodo = 4'b0010;
+                      Led[1] = 1'b0;
+                       end
+                     1'b0:
+                       Led[1] = 1'b1;
+                   endcase
+                   
+            //FlagOverflow
+                  case(Over)
+                     1'b1:
+                       begin  
+                       ActivarAnodo = 4'b0100;
+                       Led[2] = 1'b0;
+                       end
+                     1'b0:
+                       Led[2] = 1'b1;
+                   endcase
+                //FlagAcarreo
+                case(Acarreo)
+                   1'b1:
+                    begin
+                     ActivarAnodo = 4'b0110;
+                     Led[3]= 1'b0;
+                   end
+                    1'b0:
+                      Led[3]= 1'b1;
+                endcase
+                //CasoDigitoBinario a Decimal
+                  case(ActivarEntrada2)
+                    1'b1:
+                    begin
+                     ActivarAnodo = 4'b1000;
+                     Led[4] = 1'b0;
+                    end
+                    1'b0: 
+                      Led[4] = 1'b1;
+                  endcase
+        
+                end 
+              
+    
+    always @(*)
+    begin
+        LedOut[6]= 1'b1;
+                          LedOut[5] =1'b1;
+                          LedOut[4] =1'b1;
+                          LedOut[3] =1'b1;
+                          LedOut[2] =1'b1;
+                          LedOut[1] =1'b1;
+                          LedOut[0] =1'b0;
+        case (ActivarAnodo)
+            4'b0000: //FlagNegativoenuno
                 begin
-                     LedOut[0] = (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
-                     LedOut[1] = (bin[2] & bin[1] & ~bin[0]) | (bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[0]) | (~bin[3] & bin[2] & ~bin[1] & bin[0]);
-                     LedOut[2] = (bin[3] & bin[2] & ~bin[0]) | (bin[3] & bin[2] & bin[1]) | (~bin[3] & ~bin[2] & bin[1] & ~bin[0]);
-                     LedOut[3] = (bin[2] & bin[1] & bin[0]) | (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & ~bin[0]);
-                     LedOut[4] = (~bin[3] & bin[0]) | (~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1]);
-                     LedOut[5] = (~bin[3] & ~bin[2] & bin[0]) | (~bin[3] & ~bin[2] & bin[1]) | (~bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
-                     LedOut[6] = (~bin[3] & ~bin[2] & ~bin[1]) | (~bin[3] & bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & ~bin[0]);
-                    
+                    AnodoActivo[0] = 1'b0;
+                    AnodoActivo[1] = 1'b1;
+                    AnodoActivo[2] = 1'b1;
+                    AnodoActivo[3] = 1'b1;
+                    AnodoActivo[4] = 1'b1;
+                    AnodoActivo[5] = 1'b1;
+                    AnodoActivo[6] = 1'b1;
+                    AnodoActivo[7] = 1'b1;
+          
+                      LedOut[6]= 1'b1;
+                      LedOut[5] =1'b0;
+                      LedOut[4] =1'b0;
+                      LedOut[3] =1'b1;
+                      LedOut[2] =1'b1;
+                      LedOut[1] =1'b1;
+                      LedOut[0] =1'b1;
                 end
             
-        end 
+            4'b0010: //FlagCeroenuno
+            begin
+                AnodoActivo[0] = 1'b1;
+                AnodoActivo[1] = 1'b0;
+                AnodoActivo[2] = 1'b1;
+                AnodoActivo[3] = 1'b1;
+                AnodoActivo[4] = 1'b1;
+                AnodoActivo[5] = 1'b1;
+                AnodoActivo[6] = 1'b1;
+                AnodoActivo[7] = 1'b1;
+                
+                    LedOut[6]= 1'b1;
+                    LedOut[5] =1'b0;
+                    LedOut[4] =1'b0;
+                    LedOut[3] =1'b1;
+                    LedOut[2] =1'b1;
+                    LedOut[1] =1'b1;
+                    LedOut[0] =1'b1;
+            end
+            
+            
+            4'b0100: //FlagOverenuno
+            begin
+                AnodoActivo[0] = 1'b1;
+                AnodoActivo[1] = 1'b1;
+                AnodoActivo[2] = 1'b0;
+                AnodoActivo[3] = 1'b1;
+                AnodoActivo[4] = 1'b1;
+                AnodoActivo[5] = 1'b1;
+                AnodoActivo[6] = 1'b1;
+                AnodoActivo[7] = 1'b1;
+                
+                    LedOut[6]= 1'b1;
+                    LedOut[5] =1'b0;
+                    LedOut[4] =1'b0;
+                    LedOut[3] =1'b1;
+                    LedOut[2] =1'b1;
+                    LedOut[1] =1'b1;
+                    LedOut[0] =1'b1;
+            end
+            
+            
+            4'b0110: //FlagAcarreoenuno
+            begin
+                AnodoActivo[0] = 1'b1;
+                AnodoActivo[1] = 1'b1;
+                AnodoActivo[2] = 1'b1;
+                AnodoActivo[3] = 1'b0;
+                AnodoActivo[4] = 1'b1;
+                AnodoActivo[5] = 1'b1;
+                AnodoActivo[6] = 1'b1;
+                AnodoActivo[7] = 1'b1;
+                    
+                    LedOut[6]= 1'b1;
+                    LedOut[5] =1'b0;
+                    LedOut[4] =1'b0;
+                    LedOut[3] =1'b1;
+                    LedOut[2] =1'b1;
+                    LedOut[1] =1'b1;
+                    LedOut[0] =1'b1;
+            end
+            
+            
+            4'b1000: //ActivarEntrada2enuno
+            begin
+                AnodoActivo[0] = 1'b1;
+                AnodoActivo[1] = 1'b1;
+                AnodoActivo[2] = 1'b1;
+                AnodoActivo[3] = 1'b1;
+                AnodoActivo[4] = 1'b1;
+                AnodoActivo[5] = 1'b1;
+                AnodoActivo[6] = 1'b1;
+                AnodoActivo[7] = 1'b0;
+                
+                LedOut[6] = (~Entrada2[3] & ~Entrada2[2] & ~Entrada2[1] & Entrada2[0]) | (~Entrada2[3] & Entrada2[2] & ~Entrada2[1] & ~Entrada2[0]) | (Entrada2[3] & ~Entrada2[2] & Entrada2[1] & Entrada2[0]) | (Entrada2[3] & Entrada2[2] & ~Entrada2[1] & Entrada2[0]);
+                LedOut[5] = (Entrada2[2] & Entrada2[1] & ~Entrada2[0]) | (Entrada2[3] & Entrada2[1] & Entrada2[0]) | (Entrada2[3] & Entrada2[2] & ~Entrada2[0]) | (~Entrada2[3] & Entrada2[2] & ~Entrada2[1] & Entrada2[0]);
+                LedOut[4] = (Entrada2[3] & Entrada2[2] & ~Entrada2[0]) | (Entrada2[3] & Entrada2[2] & Entrada2[1]) | (~Entrada2[3] & ~Entrada2[2] & Entrada2[1] & ~Entrada2[0]);
+                LedOut[3] = (Entrada2[2] & Entrada2[1] & Entrada2[0]) | (~Entrada2[3] & ~Entrada2[2] & ~Entrada2[1] & Entrada2[0]) | (~Entrada2[3] & Entrada2[2] & ~Entrada2[1] & ~Entrada2[0]) | (Entrada2[3] & ~Entrada2[2] & Entrada2[1] & ~Entrada2[0]);
+                LedOut[2] = (~Entrada2[3] & Entrada2[0]) | (~Entrada2[2] & ~Entrada2[1] & Entrada2[0]) | (~Entrada2[3] & Entrada2[2] & ~Entrada2[1]);
+                LedOut[1] = (~Entrada2[3] & ~Entrada2[2] & Entrada2[0]) | (~Entrada2[3] & ~Entrada2[2] & Entrada2[1]) | (~Entrada2[3] & Entrada2[1] & Entrada2[0]) | (Entrada2[3] & Entrada2[2] & ~Entrada2[1] & Entrada2[0]);
+                LedOut[0] = (~Entrada2[3] & ~Entrada2[2] & ~Entrada2[1]) | (~Entrada2[3] & Entrada2[2] & Entrada2[1] & Entrada2[0]) | (Entrada2[3] & Entrada2[2] & ~Entrada2[1] & ~Entrada2[0]);
+                
+            end
+            
+         endcase
+    end
+    /*always @(posedge clock_100MHz )
+    begin 
+        if(Contador == 0)
+            Contador = Contador +1;
+            
+        else if (Contador ==1)
+            begin
+                ActivarAnodo = 4'b0000;
+                Contador = Contador +1; 
+            end
+        else if (Contador == 2)
+            begin
+                 ActivarAnodo = 4'b0001;
+                 Contador = Contador +1; 
+            end 
+            
+            else if (Contador == 2)
+             begin
+                ActivarAnodo = 4'b0010;
+                Contador = Contador +1;
+             end
+             
+             else if(Contador == 3)
+             begin
+                ActivarAnodo = 4'b0011;
+                Contador = Contador +1;
+             end
+             
+             else if(Contador == 4)
+             begin
+                ActivarAnodo = 4'b0100;
+                Contador = Contador +1;
+             end
+    end*/
+    /*always @(*)
+        begin
+        
+            case (bin) //Para encender los 7segmentos
+                4'b0000:
+                begin 
+                AnodoActivo[0] = 1'b1;
+                AnodoActivo[1] = 1'b0;
+                AnodoActivo[2] = 1'b0;
+                AnodoActivo[3] = 1'b0;
+                AnodoActivo[4] = 1'b0;
+                AnodoActivo[5] = 1'b0;
+                AnodoActivo[6] = 1'b0;
+                AnodoActivo[7] = 1'b0;
+                 LedOut[6]= 1'b0;
+                 LedOut[5] =1'b0;
+                 LedOut[4] =1'b0;
+                 LedOut[3] =1'b0;
+                 LedOut[2] =1'b0;
+                 LedOut[1] =1'b0;
+                 LedOut[0] =1'b1; 
+                end
+                4'b0001: begin 
+                AnodoActivo[0] = 1'b1;
+                AnodoActivo[1] = 1'b0;
+                AnodoActivo[2] = 1'b0;
+                AnodoActivo[3] = 1'b0;
+                AnodoActivo[4] = 1'b0;
+                AnodoActivo[5] = 1'b0;
+                AnodoActivo[6] = 1'b0;
+                AnodoActivo[7] = 1'b0;
+                  LedOut[6]= 1'b1;
+                  LedOut[5] =1'b0;
+                  LedOut[4] =1'b0;
+                  LedOut[3] =1'b1;
+                  LedOut[2] =1'b1;
+                  LedOut[1] =1'b1;
+                  LedOut[0] =1'b1; 
+                end
+                
+                endcase
+                
+            case (bin2)
+                
+                4'b0000: begin
+                AnodoActivo[0] = 1'b0;
+                AnodoActivo[1] = 1'b1;
+                AnodoActivo[2] = 1'b0;
+                AnodoActivo[3] = 1'b0;
+                AnodoActivo[4] = 1'b0;
+                AnodoActivo[5] = 1'b0;
+                AnodoActivo[6] = 1'b0;
+                AnodoActivo[7] = 1'b0;
+                 LedOut[6]= 1'b0;
+                 LedOut[5] =1'b0;
+                 LedOut[4] =1'b0;
+                 LedOut[3] =1'b0;
+                 LedOut[2] =1'b0;
+                 LedOut[1] =1'b0;
+                 LedOut[0] =1'b1; 
+                end
+                
+                4'b0001: begin
+               AnodoActivo[0] = 1'b0;
+               AnodoActivo[1] = 1'b1;
+               AnodoActivo[2] = 1'b0;
+               AnodoActivo[3] = 1'b0;
+               AnodoActivo[4] = 1'b0;
+               AnodoActivo[5] = 1'b0;
+               AnodoActivo[6] = 1'b0;
+               AnodoActivo[7] = 1'b0;
+                LedOut[6]= 1'b1;
+                LedOut[5] =1'b0;
+                LedOut[4] =1'b0;
+                LedOut[3] =1'b1;
+                LedOut[2] =1'b1;
+                LedOut[1] =1'b1;
+                LedOut[0] =1'b1; 
+                end
+            endcase
+            
+            case (bin3)
+            4'b0000: begin 
+            AnodoActivo[0] = 1'b0;
+            AnodoActivo[1] = 1'b0;
+            AnodoActivo[2] = 1'b1;
+            AnodoActivo[3] = 1'b0;
+            AnodoActivo[4] = 1'b0;
+            AnodoActivo[5] = 1'b0;
+            AnodoActivo[6] = 1'b0;
+            AnodoActivo[7] = 1'b0;
+             LedOut[6]= 1'b0;
+             LedOut[5] =1'b0;
+             LedOut[4] =1'b0;
+             LedOut[3] =1'b0;
+             LedOut[2] =1'b0;
+             LedOut[1] =1'b0;
+             LedOut[0] =1'b1; 
+            end
+            4'b0001: begin
+            AnodoActivo[0] = 1'b0;
+            AnodoActivo[1] = 1'b0;
+            AnodoActivo[2] = 1'b1;
+            AnodoActivo[3] = 1'b0;
+            AnodoActivo[4] = 1'b0;
+            AnodoActivo[5] = 1'b0;
+            AnodoActivo[6] = 1'b0;
+            AnodoActivo[7] = 1'b0;
+             LedOut[6]= 1'b1;
+             LedOut[5] =1'b0;
+             LedOut[4] =1'b0;
+             LedOut[3] =1'b1;
+             LedOut[2] =1'b1;
+             LedOut[1] =1'b1;
+             LedOut[0] =1'b1; 
+            end
+            endcase
+            
+            case (bin4)
+                4'b0000: begin 
+                AnodoActivo[0] = 1'b0;
+                AnodoActivo[1] = 1'b0;
+                AnodoActivo[2] = 1'b0;
+                AnodoActivo[3] = 1'b1;
+                AnodoActivo[4] = 1'b0;
+                AnodoActivo[5] = 1'b0;
+                AnodoActivo[6] = 1'b0;
+                AnodoActivo[7] = 1'b0;
+                 LedOut[6]= 1'b0;
+                 LedOut[5] =1'b0;
+                 LedOut[4] =1'b0;
+                 LedOut[3] =1'b0;
+                 LedOut[2] =1'b0;
+                 LedOut[1] =1'b0;
+                 LedOut[0] =1'b1; 
+                end
+                4'b0001: begin
+                AnodoActivo[0] = 1'b0;
+                AnodoActivo[1] = 1'b0;
+                AnodoActivo[2] = 1'b0;
+                AnodoActivo[3] = 1'b1;
+                AnodoActivo[4] = 1'b0;
+                AnodoActivo[5] = 1'b0;
+                AnodoActivo[6] = 1'b0;
+                AnodoActivo[7] = 1'b0;
+                 LedOut[6]= 1'b1;
+                 LedOut[5] =1'b0;
+                 LedOut[4] =1'b0;
+                 LedOut[3] =1'b1;
+                 LedOut[2] =1'b1;
+                 LedOut[1] =1'b1;
+                 LedOut[0] =1'b1; 
+                 end
+             endcase
+             
+            //CasoDigitoBinario a Decimal
+                case(bin5)
+                    4'b0001: begin
+                        AnodoActivo[0] = 1'b0;
+                        AnodoActivo[1] = 1'b0;
+                        AnodoActivo[2] = 1'b0;
+                        AnodoActivo[3] = 1'b0;
+                        AnodoActivo[4] = 1'b0;
+                        AnodoActivo[5] = 1'b0;
+                        AnodoActivo[6] = 1'b0;
+                        AnodoActivo[7] = 1'b1;
+                        LedOut[6] = (~Entrada2[3] & ~Entrada2[2] & ~Entrada2[1] & Entrada2[0]) | (~Entrada2[3] & Entrada2[2] & ~Entrada2[1] & ~Entrada2[0]) | (Entrada2[3] & ~Entrada2[2] & Entrada2[1] & Entrada2[0]) | (Entrada2[3] & Entrada2[2] & ~Entrada2[1] & Entrada2[0]);
+                        LedOut[5] = (Entrada2[2] & Entrada2[1] & ~Entrada2[0]) | (Entrada2[3] & Entrada2[1] & Entrada2[0]) | (Entrada2[3] & Entrada2[2] & ~Entrada2[0]) | (~Entrada2[3] & Entrada2[2] & ~Entrada2[1] & Entrada2[0]);
+                        LedOut[4] = (Entrada2[3] & Entrada2[2] & ~Entrada2[0]) | (Entrada2[3] & Entrada2[2] & Entrada2[1]) | (~Entrada2[3] & ~Entrada2[2] & Entrada2[1] & ~Entrada2[0]);
+                        LedOut[3] = (Entrada2[2] & Entrada2[1] & Entrada2[0]) | (~Entrada2[3] & ~Entrada2[2] & ~Entrada2[1] & Entrada2[0]) | (~Entrada2[3] & Entrada2[2] & ~Entrada2[1] & ~Entrada2[0]) | (Entrada2[3] & ~Entrada2[2] & Entrada2[1] & ~Entrada2[0]);
+                        LedOut[2] = (~Entrada2[3] & Entrada2[0]) | (~Entrada2[2] & ~Entrada2[1] & Entrada2[0]) | (~Entrada2[3] & Entrada2[2] & ~Entrada2[1]);
+                        LedOut[1] = (~Entrada2[3] & ~Entrada2[2] & Entrada2[0]) | (~Entrada2[3] & ~Entrada2[2] & Entrada2[1]) | (~Entrada2[3] & Entrada2[1] & Entrada2[0]) | (Entrada2[3] & Entrada2[2] & ~Entrada2[1] & Entrada2[0]);
+                        LedOut[0] = (~Entrada2[3] & ~Entrada2[2] & ~Entrada2[1]) | (~Entrada2[3] & Entrada2[2] & Entrada2[1] & Entrada2[0]) | (Entrada2[3] & Entrada2[2] & ~Entrada2[1] & ~Entrada2[0]);
+                    
+                    end
+                    4'b0000: begin
+                         AnodoActivo[0] = 1'b0;
+                         AnodoActivo[1] = 1'b0;
+                         AnodoActivo[2] = 1'b0;
+                         AnodoActivo[3] = 1'b0;
+                         AnodoActivo[4] = 1'b0;
+                         AnodoActivo[5] = 1'b0;
+                         AnodoActivo[6] = 1'b0;
+                         AnodoActivo[7] = 1'b1;
+                         
+                         LedOut[6]= 1'b0;
+                         LedOut[5] =1'b0;
+                         LedOut[4] =1'b0;
+                         LedOut[3] =1'b0;
+                         LedOut[2] =1'b0;
+                         LedOut[1] =1'b0;
+                         LedOut[0] =1'b1; 
+                    end
+                    
+               endcase
+            
+        end */
 endmodule
