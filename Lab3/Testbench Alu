@@ -144,7 +144,7 @@ assert (ALUResult === 1) else $error("017 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=0; ALUControl=13; #10
 assert (ALUResult === 1) else $error("017 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=0; ALUControl=13; #10
-assert (ALUResult === 2) else $error("017 failed.");
+assert (ALUResult === 0) else $error("017 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=0; ALUControl=13; #10
 assert (ALUResult === 1) else $error("017 failed.");
 
