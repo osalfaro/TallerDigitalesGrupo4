@@ -1,21 +1,36 @@
 module MainRegistroALU #(parameter n = 8) (
-        input logic [2*n+4:0] D,
-        input logic CLK,
+        input logic [2*n+4:0] D, //entrada el primer ff
+        input logic CLK, 
         input logic RST,
-        output logic [n+3:0] Q
+        output logic [n+3:0] Q //salida del segundo ff
 
     );
-    logic [3:0] ALUFlags;
-    logic  [n-1:0]ALUResult;
-    logic [2*n+4:0] Q2;
-    logic [n+3:0] D2;
-    RegistroALU #(2*n+5) R1(D, CLK, RST, Q2);
+    logic [3:0] ALUFlags; //salidas de la alu, entran al segundo ff
+    logic  [n-1:0]ALUResult; //salidas de la alu, entran al segundo ff
+    logic [2*n+4:0] Q2; //salida del primer ff
+    logic [n+3:0] D2; //entrada del segundo ff
+    
+    //instanciando primer registro
+    RegistroALU #(2*n+5) R1(D, CLK, RST, Q2); //entra D y sale Q2
+    
+    //instanciando la ALU
+    /*  Q2[n-1:0] es el dato A
+        Q2[2*n-1:n] es el dato B
+        Q2[2*n+4] es el Flag in
+        Q2[2*n+3:2*n] es alu control
+        ALUFlags y ALUResult son las salidas */
+        
     AluPrueba #(n) alu(Q2[n-1:0], Q2[2*n-1:n], Q2[2*n+4], Q2[2*n+3:2*n],ALUFlags,ALUResult);
+    
     always @(*)
     begin
-        D2[n-1:0] <= ALUResult;
+        D2[n-1:0] <= ALUResult; //se asigna a D2 las salidas de la ALU
         D2[n+3:n] <= ALUFlags; 
     end
+    
+    //instanciando segundo ff
+    //entra D2 y la salida es Q
     RegistroALU #(n+4) R2(D2,CLK, RST,Q);
+    
 endmodule
 
