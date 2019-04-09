@@ -1,16 +1,21 @@
 module MainRegistroALU #(parameter n = 8) (
-        input logic [2*n+4:0] Q,
+        input logic [2*n+4:0] D,
         input logic CLK,
         input logic RST,
-        output logic [2*n+3:0] D
+        output logic [n+3:0] Q
 
     );
     logic [3:0] ALUFlags;
     logic  [n-1:0]ALUResult;
-    logic [n+3:0] Q2;
+    logic [2*n+4:0] Q2;
     logic [n+3:0] D2;
-    RegistroALU #(n) R1(Q, CLK, RST, D);
-    AluPrueba #(n) alu(D[n-1:0], D[2*n-1:n], D[2*n+4], D[2*n+3:2*n],ALUFlags,ALUResult);
-    
-    RegistroALU #(n) R2();
+    RegistroALU #(2*n+5) R1(D, CLK, RST, Q2);
+    AluPrueba #(n) alu(Q2[n-1:0], Q2[2*n-1:n], Q2[2*n+4], Q2[2*n+3:2*n],ALUFlags,ALUResult);
+    always @(*)
+    begin
+        D2[n-1:0] <= ALUResult;
+        D2[n+3:n] <= ALUFlags; 
+    end
+    RegistroALU #(n+4) R2(D2,CLK, RST,Q);
 endmodule
+
