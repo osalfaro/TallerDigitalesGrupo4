@@ -2,10 +2,10 @@ module TestBench( );
 logic [3:0] ALUA, ALUB;
 logic ALUFlagIn;
 logic [3:0] ALUControl;
-//logic [3:0]ALUFlags;
+logic [3:0]ALUFlags;
 logic [3:0]ALUResult;
 
-Alu #(4) dut(ALUA,ALUB,ALUFlagIn,ALUControl,ALUResult);
+Alu #(4) dut(ALUA,ALUB,ALUFlagIn,ALUControl,ALUFlags,ALUResult);
 
 initial begin
 //SUMA
