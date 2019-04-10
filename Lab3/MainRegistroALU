@@ -11,7 +11,7 @@ module MainRegistroALU #(parameter n = 8) (
     logic [n+3:0] D2; //entrada del segundo ff
     
     //instanciando primer registro
-    RegistroALU #(2*n+5) R1(D, CLK, RST, Q2); //entra D y sale Q2
+    Registro #(2*n+5) R1(D, CLK, RST, Q2); //entra D y sale Q2
     
     //instanciando la ALU
     /*  Q2[n-1:0] es el dato A
@@ -30,7 +30,7 @@ module MainRegistroALU #(parameter n = 8) (
     
     //instanciando segundo ff
     //entra D2 y la salida es Q
-    RegistroALU #(n+4) R2(D2,CLK, RST,Q);
+    Registro #(n+4) R2(D2,CLK, RST,Q);
     
 endmodule
 
