@@ -2,8 +2,8 @@ module TestBench( );
 logic [3:0] ALUA, ALUB;
 logic ALUFlagIn;
 logic [3:0] ALUControl;
-//logic ALUFlags [3:0];
-logic ALUResult [3:0];
+//logic [3:0]ALUFlags;
+logic [3:0]ALUResult;
 
 Alu #(4) dut(ALUA,ALUB,ALUFlagIn,ALUControl,ALUResult);
 
