@@ -12,151 +12,151 @@ initial begin
 ALUA=4; ALUB=2; ALUFlagIn=0; ALUControl=0; #10;
 assert (ALUResult === 6) else $error("000 failed."); 
 ALUA=7; ALUB=2; ALUFlagIn=0; ALUControl=0; #10;
-assert (ALUResult === 9) else $error("000 failed."); 
+assert (ALUResult === 9) else $error("001 failed."); 
 ALUA=8; ALUB=5; ALUFlagIn=0; ALUControl=0; #10;
-assert (ALUResult === 4'hd) else $error("000 failed."); 
+assert (ALUResult === 4'hd) else $error("002 failed."); 
 ALUA=2; ALUB=1; ALUFlagIn=0; ALUControl=0; #10;
-assert (ALUResult === 3) else $error("000 failed."); 
+assert (ALUResult === 3) else $error("003 failed."); 
 //RESTA
 ALUA=4; ALUB=2; ALUFlagIn=0; ALUControl=1; #10;
-assert (ALUResult === 2) else $error("001 failed."); 
+assert (ALUResult === 2) else $error("004 failed."); 
 ALUA=7; ALUB=2; ALUFlagIn=0; ALUControl=1; #10;
-assert (ALUResult === 5) else $error("001 failed."); 
+assert (ALUResult === 5) else $error("005 failed."); 
 ALUA=8; ALUB=5; ALUFlagIn=0; ALUControl=1; #10;
-assert (ALUResult === 3) else $error("001 failed."); 
+assert (ALUResult === 3) else $error("006 failed."); 
 ALUA=2; ALUB=1; ALUFlagIn=0; ALUControl=1; #10;
-assert (ALUResult === 1) else $error("001 failed."); 
+assert (ALUResult === 1) else $error("007 failed."); 
 //INCREMENTO a A
 ALUA=4; ALUB=2; ALUFlagIn=0; ALUControl=2; #10;
-assert (ALUResult === 5) else $error("002 failed.");
+assert (ALUResult === 5) else $error("008 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=0; ALUControl=2; #10;
-assert (ALUResult === 8) else $error("002 failed.");
+assert (ALUResult === 8) else $error("009 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=0; ALUControl=2; #10;
-assert (ALUResult === 9) else $error("002 failed.");
+assert (ALUResult === 9) else $error("010 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=0; ALUControl=2; #10;
-assert (ALUResult === 3) else $error("002 failed.");
+assert (ALUResult === 3) else $error("011 failed.");
 //INCREMENTO a B
 ALUA=4; ALUB=2; ALUFlagIn=1; ALUControl=2; #10;
-assert (ALUResult === 3) else $error("003 failed.");
+assert (ALUResult === 3) else $error("012 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=1; ALUControl=2; #10;
-assert (ALUResult === 3) else $error("003 failed.");
+assert (ALUResult === 3) else $error("013 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=1; ALUControl=2; #10;
-assert (ALUResult === 6) else $error("003 failed.");
+assert (ALUResult === 6) else $error("014 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=1; ALUControl=2; #10;
-assert (ALUResult === 2) else $error("003 failed.");
+assert (ALUResult === 2) else $error("015 failed.");
 //DECREMENTO a A
 ALUA=4; ALUB=2; ALUFlagIn=0; ALUControl=3; #10;
-assert (ALUResult === 3) else $error("004 failed.");
+assert (ALUResult === 3) else $error("016 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=0; ALUControl=3; #10;
-assert (ALUResult === 6) else $error("004 failed.");
+assert (ALUResult === 6) else $error("017 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=0; ALUControl=3; #10;
-assert (ALUResult === 7) else $error("004 failed.");
+assert (ALUResult === 7) else $error("018 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=0; ALUControl=3; #10;
-assert (ALUResult === 1) else $error("004 failed.");
+assert (ALUResult === 1) else $error("019 failed.");
 //DECREMENTO a B
 ALUA=4; ALUB=2; ALUFlagIn=1; ALUControl=3; #10
-assert (ALUResult === 1) else $error("005 failed.");
+assert (ALUResult === 1) else $error("020 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=1; ALUControl=3; #10
-assert (ALUResult === 1) else $error("005 failed.");
+assert (ALUResult === 1) else $error("021 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=1; ALUControl=3; #10
-assert (ALUResult === 4) else $error("005 failed.");
+assert (ALUResult === 4) else $error("022 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=1; ALUControl=3; #10
-assert (ALUResult === 0) else $error("005 failed.");
+assert (ALUResult === 0) else $error("023 failed.");
 
 ALUFlagIn=0; ALUControl=4; #10;
-assert (ALUResult === 'bz) else $error("006 failed.");
+assert (ALUResult === 'bz) else $error("024 failed.");
 
 ALUControl=5; #10;
-assert (ALUResult === 'bz) else $error("007 failed.");
+assert (ALUResult === 'bz) else $error("025 failed.");
 
 ALUControl=6; #10;
-assert (ALUResult === 'bz) else $error("008 failed.");
+assert (ALUResult === 'bz) else $error("026 failed.");
 
 ALUControl=7; #10;
-assert (ALUResult === 'bz) else $error("009 failed.");
+assert (ALUResult === 'bz) else $error("027 failed.");
 
 //AND
 ALUA=4; ALUB=2; ALUControl=8; #10
-assert (ALUResult === 0) else $error("010 failed.");
+assert (ALUResult === 0) else $error("028 failed.");
 ALUA=7; ALUB=2; ALUControl=8; #10
-assert (ALUResult === 2) else $error("005 failed.");
+assert (ALUResult === 2) else $error("029 failed.");
 ALUA=8; ALUB=5; ALUControl=8; #10
-assert (ALUResult === 0) else $error("005 failed.");
+assert (ALUResult === 0) else $error("030 failed.");
 ALUA=2; ALUB=1; ALUControl=8; #10
-assert (ALUResult === 0) else $error("005 failed.");
+assert (ALUResult === 0) else $error("031 failed.");
 //OR
 ALUA=4; ALUB=2; ALUControl=9; #10
-assert (ALUResult === 6) else $error("011 failed.");
+assert (ALUResult === 6) else $error("032 failed.");
 ALUA=7; ALUB=2; ALUControl=9; #10
-assert (ALUResult === 7) else $error("011 failed.");
+assert (ALUResult === 7) else $error("033 failed.");
 ALUA=8; ALUB=5; ALUControl=9; #10
-assert (ALUResult === 4'hd) else $error("011 failed.");
+assert (ALUResult === 4'hd) else $error("034 failed.");
 ALUA=2; ALUB=1; ALUControl=9; #10
-assert (ALUResult === 3) else $error("011 failed.");
+assert (ALUResult === 3) else $error("035 failed.");
 //NOT A
 ALUA=4; ALUB=2; ALUFlagIn=0; ALUControl=10; #10
-assert (ALUResult === 4'hb) else $error("012 failed.");
+assert (ALUResult === 4'hb) else $error("036 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=0; ALUControl=10; #10
-assert (ALUResult === 8) else $error("012 failed.");
+assert (ALUResult === 8) else $error("037 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=0; ALUControl=10; #10
-assert (ALUResult === 7) else $error("012 failed.");
+assert (ALUResult === 7) else $error("038 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=0; ALUControl=10; #10
-assert (ALUResult === 4'hd) else $error("012 failed.");
+assert (ALUResult === 4'hd) else $error("039 failed.");
 //NOT B
 ALUA=4; ALUB=2; ALUFlagIn=1; ALUControl=10; #10
-assert (ALUResult === 4'hd) else $error("013 failed.");
+assert (ALUResult === 4'hd) else $error("040 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=1; ALUControl=10; #10
-assert (ALUResult === 4'hd) else $error("013 failed.");
+assert (ALUResult === 4'hd) else $error("041 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=1; ALUControl=10; #10
-assert (ALUResult === 4'ha) else $error("013 failed.");
+assert (ALUResult === 4'ha) else $error("042 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=1; ALUControl=10; #10
-assert (ALUResult === 4'he) else $error("013 failed.");
+assert (ALUResult === 4'he) else $error("043 failed.");
 //XOR
 ALUA=4; ALUB=2; ALUFlagIn=0; ALUControl=11; #10
-assert (ALUResult === 6) else $error("014 failed.");
+assert (ALUResult === 6) else $error("044 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=0; ALUControl=11; #10
-assert (ALUResult === 5) else $error("014 failed.");
+assert (ALUResult === 5) else $error("045 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=0; ALUControl=11; #10
-assert (ALUResult === 4'hd) else $error("014 failed.");
+assert (ALUResult === 4'hd) else $error("046 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=0; ALUControl=11; #10
-assert (ALUResult === 3) else $error("014 failed.");
+assert (ALUResult === 3) else $error("047 failed.");
 //Shift Left 0
 ALUA=4; ALUB=2; ALUFlagIn=0; ALUControl=12; #10
-assert (ALUResult === 0) else $error("015 failed.");
+assert (ALUResult === 0) else $error("048 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=0; ALUControl=12; #10
-assert (ALUResult === 4'hc) else $error("015 failed.");
+assert (ALUResult === 4'hc) else $error("049 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=0; ALUControl=12; #10
-assert (ALUResult === 0) else $error("015 failed.");
+assert (ALUResult === 0) else $error("050 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=0; ALUControl=12; #10
-assert (ALUResult === 4) else $error("015 failed.");
+assert (ALUResult === 4) else $error("051 failed.");
 //Shift Left 1
 ALUA=4; ALUB=2; ALUFlagIn=1; ALUControl=12; #10
-assert (ALUResult === 3) else $error("016 failed.");
+assert (ALUResult === 3) else $error("052 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=1; ALUControl=12; #10
-assert (ALUResult === 4'hf) else $error("016 failed.");
+assert (ALUResult === 4'hf) else $error("053 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=1; ALUControl=12; #10
-assert (ALUResult === 4'hf) else $error("016 failed.");
+assert (ALUResult === 4'hf) else $error("054 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=1; ALUControl=12; #10
-assert (ALUResult === 5) else $error("016 failed.");
+assert (ALUResult === 5) else $error("055 failed.");
 //Shift Right 0
 ALUA=4; ALUB=2; ALUFlagIn=0; ALUControl=13; #10
-assert (ALUResult === 1) else $error("017 failed.");
+assert (ALUResult === 1) else $error("056 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=0; ALUControl=13; #10
-assert (ALUResult === 1) else $error("017 failed.");
+assert (ALUResult === 1) else $error("057 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=0; ALUControl=13; #10
-assert (ALUResult === 0) else $error("017 failed.");
+assert (ALUResult === 0) else $error("058 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=0; ALUControl=13; #10
-assert (ALUResult === 1) else $error("017 failed.");
+assert (ALUResult === 1) else $error("059 failed.");
 
 //Shift Right 1
 ALUA=4; ALUB=2; ALUFlagIn=1; ALUControl=13; #10
-assert (ALUResult === 4'hd) else $error("018 failed.");
+assert (ALUResult === 4'hd) else $error("060 failed.");
 ALUA=7; ALUB=2; ALUFlagIn=1; ALUControl=13; #10
-assert (ALUResult === 4'hd) else $error("018 failed.");
+assert (ALUResult === 4'hd) else $error("061 failed.");
 ALUA=8; ALUB=5; ALUFlagIn=1; ALUControl=13; #10
-assert (ALUResult === 4'hf) else $error("018 failed.");
+assert (ALUResult === 4'hf) else $error("062 failed.");
 ALUA=2; ALUB=1; ALUFlagIn=1; ALUControl=13; #10
-assert (ALUResult === 9) else $error("018 failed.");
+assert (ALUResult === 9) else $error("063 failed.");
 
 end 
 
