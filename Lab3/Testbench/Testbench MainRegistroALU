@@ -1,0 +1,29 @@
+module TestBench( );
+logic [2*8+4:0] D; //entrada el primer ff
+logic CLK;
+logic RST;
+logic [8+3:0] Q; //salida del segundo ff
+
+MainRegistroALU #(8) dut(D,CLK,RST,Q);
+
+initial begin
+CLK=0; RST=0; D=21'b000010001010100000111; #10;
+CLK=1; RST=0; D=21'b000010001010100000111; #10;
+
+CLK=1; #10;
+
+CLK=0; RST=0; D=21'b111010000010000011001; #10;
+
+CLK=1; #10;
+
+CLK=0; RST=0; D=21'b100100000100100000001; #10;
+
+CLK=1; #10;
+
+CLK=0; RST=1; #10;
+
+CLK=1; #10;
+
+end 
+
+endmodule
