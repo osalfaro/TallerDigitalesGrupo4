@@ -1,0 +1,304 @@
+
+module compAnd #(parameter n=3)(
+   input logic [n-1:0] a,b,
+   output logic [n-1:0] c
+      );
+      
+      assign c = a & b;
+endmodule
+
+module compXor #(parameter n=4)(
+    input logic [n-1:0] a,b,
+    output logic [n-1:0] c
+    );
+    
+    assign c = a^b;
+endmodule
+
+
+
+
+module Mux2a1 #(parameter n=3)(
+        input logic [n-1:0] a,b,
+        input logic sel,
+        output logic [n-1:0] c);
+        
+        assign c = sel? b:a;
+        
+endmodule
+
+
+module ComplementoA2Nbits #(parameter n=3)
+(
+input logic [n-1:0] in,
+output logic [n-1:0] out
+);
+
+assign out = ~in + 1; //se invierte la entrada y se le suma 1
+
+endmodule
+
+
+//SUMADOR PARAMETRIZABLE (COMPORTAMIENTO)
+module SumadorNbits #(parameter n=3)
+(
+input logic [n-1:0] a,b, //datos de entrada
+input logic cin, 
+output logic [n-1:0] s, //dato de salida (total)
+output logic cout
+);
+
+    logic [n:0] resultado; //se utiliza para almacenar la suma con todo y bit de acarreo, por eso es de n+1 bits
+
+    assign resultado = a+b+cin; //se realiza la suma
+    assign s = resultado[n-1:0]; //los primeros n bits se guardan en s
+    assign cout = resultado[n]; //el bit n+1 se guarda como acarreo de salida
+
+endmodule
+
+module RestadorNbits #(parameter n=3)
+(
+input logic [n-1:0] a,b, //datos de entrada
+input logic cin, 
+output logic [n-1:0] s, //dato de salida (diferencia)
+output logic cout
+);
+
+logic [n-1:0] c; //para hacer el complemento a2
+
+ComplementoA2Nbits #(n) complemento (b,c); //entra b, sale b en complemento a2 (c)
+SumadorNbits #(n) suma (a,c,cin,s,cout); //realiza la suma de a+c
+
+endmodule
+
+module incrementoParametrizable #(parameter n=3)(
+        input logic [n-1:0] a,b,
+        input logic ALUFlagIn,
+        output logic cout,
+        output logic [n-1:0] salida);
+        
+        logic [n-1:0] aux;
+        
+        Mux2a1 #(n) mux (a,b,ALUFlagIn,aux);
+        SumadorNbits #(n) sumador (aux,1,0,salida,cout);
+        
+endmodule
+
+module decrementoParametrizable #(parameter n=3)(
+        input logic [n-1:0] a,b,
+        input logic ALUFlagIn,
+        output logic cout,
+        output logic [n-1:0] salida);
+        
+        logic [n-1:0] aux;
+        
+        Mux2a1 #(n) mux (a,b,ALUFlagIn,aux);
+        RestadorNbits #(n) sumador (aux,1,0,salida,cout);
+        
+endmodule
+
+module CompuertaNot #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+input logic AluFlagIn,
+output logic [n-1:0] salida
+);
+
+logic [n-1:0] aux;
+
+Mux2a1 #(n) mux (a,b,AluFlagIn,aux);
+assign salida = ~aux;
+
+endmodule
+
+module CompuertaOr #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+output logic [n-1:0] c
+);
+
+assign c = a | b;
+
+endmodule
+
+module ShiftRight #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+input logic AluFlagIn,
+output logic [n-1:0] c
+);
+
+logic [n-1:0] aux=0;
+
+always_comb //Para poder utilizar el IF
+begin
+    if (AluFlagIn==0) //corrimiento con ceros
+        begin
+        c <= a>>b;
+        end
+    else //corrimiento con unos
+        begin
+        if (b<n)
+            begin
+            aux <= ~((2**(n-b))-1); //se calcula un aux que tiene 'unos' en la posicion necesaria
+            end
+        else
+            begin
+            aux <=~0;
+            end
+        c <= (a>>b) | aux; //corre a la der y hace un or con la cantidad de unos necesaria
+        end
+end
+endmodule
+
+module ShiftLeft #(parameter n=3)
+(
+input logic [n-1:0] a,b,
+input logic AluFlagIn,
+output logic [n-1:0] c
+);
+
+always_comb //Para poder utilizar el IF
+begin
+    if (AluFlagIn==0) //corrimiento con ceros
+        begin
+        c <= a<<b;
+        end
+    else //corrimiento con unos
+        begin
+        c <= (a<<b) | ((2**b)-1); //corre a la izq y hace un or con la cantidad de unos necesaria
+        end
+end
+endmodule
+
+
+module Mux16a1 #(parameter n=3)(
+    input logic [n-1:0] a,b,c,d,e,f,g,h,i,j,
+    input logic [3:0] sel,
+    output logic [n-1:0] salida); //o output tri
+    
+    logic [n-1:0] buffer = 'bz; 
+    
+    
+    assign salida = sel[3] ? (sel[2]?(sel[1]?(sel[0]? buffer:buffer):(sel[0]? j:i)):(sel[1]? (sel[0]? h:g):(sel[0]? f:e))):(sel[2]?(sel[1]?(sel[0]? buffer:buffer):(sel[0]? buffer:buffer)):(sel[1]? (sel[0]? d:c):(sel[0]? b:a)));
+endmodule
+
+module ALUFlags # (parameter n=3) (
+    input logic [n-1:0] MuxSalidas, a, b, //la salida del mux, el dato A y el B
+    input logic acarreo, //la salida del mux de acarreo
+    output logic [3:0] ALUFlags //salida, 4 banderas
+    );
+      
+    always @(*)
+    begin 
+        //negativo:    
+        if ( MuxSalidas[n-1] == 1)
+            ALUFlags[0] = 1;     
+        else 
+            ALUFlags[0] = 0;
+        
+        //zero:            
+        if (MuxSalidas == 0)
+            ALUFlags[1] = 1;
+        else 
+            ALUFlags[1] = 0;
+        
+        //carry:
+        ALUFlags[2]= acarreo;   
+        
+        //para overflow:
+        if(a[n-1]==0 & b[n-1]==0)
+            begin
+            if (MuxSalidas[n-1]==1)
+                ALUFlags[3]=1;
+            else
+                ALUFlags[3]=0;
+            end
+        else if(a[n-1]==1 & b[n-1]==1)
+            begin
+            if (MuxSalidas[n-1]==0)
+                ALUFlags[3]=1;
+            else
+                ALUFlags[3]=0;
+            end
+        else
+            begin
+            ALUFlags[3]=0;
+            end
+    end
+endmodule
+
+
+module AluPrueba #(parameter n=3)
+(
+    input logic [n-1:0] ALUA, ALUB,
+    input logic ALUFlagIn,
+    input logic [3:0] ALUControl,
+    output logic [3:0] ALUFlags ,
+    // El orden de las asignaciones de variables son [x:0] var para todas.
+    output logic a,b,c,d,e,g,f,
+    output logic AN7,
+    output logic AN6,
+    output logic AN5,
+    output logic AN4,
+    output logic AN3,
+    output logic AN2,
+    output logic AN1,
+    output logic [n-1:0] ALUA2,
+    output logic [n-1:0] ALUB2,
+    output logic  [n-1:0]ALUResultado
+    );
+    
+    
+    logic [n-1:0] au0;
+    logic [n-1:0] au1;
+    logic [n-1:0] au2;
+    logic [n-1:0] au3;
+    logic [n-1:0] au4;
+    logic [n-1:0] au5;
+    logic [n-1:0] au6;
+    logic [n-1:0] au7;
+    logic [n-1:0] au8;
+    logic [n-1:0] au9;
+    logic c0;
+    logic c1;
+    logic c2;
+    logic c3;
+    logic  [n-1:0]ALUResult;
+    assign AN7 =1;
+    assign AN6 =1;
+    assign AN5 =1;
+    assign AN4 =1;
+    assign AN3 =1;
+    assign AN2 =1;
+    assign AN1 =1;
+    //Operaciones Aritmeticas
+    SumadorNbits #(n) sumador(ALUA,ALUB,ALUFlagIn,au0,c0);
+    RestadorNbits #(n) restador(ALUA,ALUB,ALUFlagIn,au1,c1);
+    incrementoParametrizable #(n) incremento(ALUA,ALUB,ALUFlagIn,c2,au2);
+    decrementoParametrizable #(n) decremento(ALUA,ALUB,ALUFlagIn,c3,au3);
+    
+    //Operaciones Logicas
+    compAnd #(n) compuertaand(ALUA,ALUB,au4);
+    CompuertaOr #(n) compuertaor(ALUA,ALUB,au5);
+    CompuertaNot #(n) compuertanot(ALUA,ALUB,ALUFlagIn,au6);
+    compXor #(n) compuertaxor(ALUA,ALUB,au7);
+    ShiftLeft #(n) shiftleft(ALUA,ALUB,ALUFlagIn,au8);
+    ShiftRight #(n) shiftright(ALUA,ALUB,ALUFlagIn,au9);
+    
+    
+    
+    
+    logic auxflag;
+    
+    Mux16a1 #(n) muxsout(au0,au1,au2,au3,au4,au5,au6,au7,au8,au9,ALUControl,ALUResult);
+    Mux16a1 #(n) muxcarry(c0,c1,c2,c3,0,0,0,0,0,0,ALUControl,auxflag);
+    
+    
+    ALUFlags #(n) flags(ALUResult,ALUA,ALUB,auxflag,ALUFlags);
+    assign ALUA2 = ALUA;
+    assign ALUB2 = ALUB;
+    assign ALUResultado = ALUResult;
+    Deco7Segmentos #(n) Displays(ALUResult,a,b,c,d,e,f,g);
+    
+endmodule
