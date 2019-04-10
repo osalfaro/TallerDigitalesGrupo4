@@ -1,25 +1,3 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 04/10/2019 11:12:25 AM
-// Design Name: 
-// Module Name: Displays
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
-
 module Contador #(parameter n=3)( //contador
     input logic clk_contador,
     output logic [n-1:0] cuenta //con parametro en 3, cuenta hasta 8
@@ -125,6 +103,7 @@ endmodule
 
 /*
 le entra:
+    clk de la fpga
     negativo
     cero
     acarreo
