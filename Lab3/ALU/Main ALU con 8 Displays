@@ -1,0 +1,33 @@
+module MainALU #(parameter n=3)(
+    input logic [n-1:0] ALUA, ALUB,
+    input logic ALUFlagIn,
+    input logic [3:0] ALUControl,
+    input wire clk,
+    output wire [7:0] anodo, //activa el anodo correcto
+    output wire a,b,c,d,e,f,g //se conectan al display, los 7 segmentos
+    );
+    
+    wire [3:0] ALUFlags;
+    wire  [n-1:0]ALUResult;
+    AluPrueba #(n) Alu (ALUA, ALUB,ALUFlagIn,ALUControl,ALUFlags,ALUResult);
+    
+    wire [3:0] FlagN; //negativo 4 bits
+    wire [3:0] FlagZ; //cero 4 bits
+    wire [3:0] FlagC; // carry 4 bits
+    wire [3:0] FlagO; // overflow 4 bits
+    wire [3:0] Result0;
+    wire [3:0] Result1;
+    wire [3:0] Result2;
+    wire [3:0] ResultTotal;
+    
+    assign FlagN = {3'b0,ALUFlags[0]};
+    assign FlagZ = {3'b0,ALUFlags[1]};
+    assign FlagC = {3'b0,ALUFlags[2]};
+    assign FlagO = {3'b0,ALUFlags[3]};
+    assign Result0= {3'b0,ALUResult[0]};
+    assign Result1= {3'b0,ALUResult[1]};
+    assign Result2= {3'b0,ALUResult[2]};
+    assign ResultTotal= {1'b0,ALUResult};
+    
+    ControlDisplays #(3) Disp (clk,FlagN,FlagZ,FlagC,FlagO,Result0,Result1,Result2,ResultTotal,anodo,a,b,c,d,e,f,g);
+endmodule
