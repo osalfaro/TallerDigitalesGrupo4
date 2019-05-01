@@ -1,0 +1,11 @@
+module TestbenchSumaMantisas();
+logic [23:0] mantNoDesplazada,mantDesplazada;
+logic [24:0] mantisaSuma; 
+   
+SumaMantisas dut(mantNoDesplazada,mantDesplazada,mantisaSuma);
+initial begin
+mantNoDesplazada= 24'b111111000000000000000000; 
+mantDesplazada= 24'b000001100000000000000000; #10;
+
+end
+endmodule
