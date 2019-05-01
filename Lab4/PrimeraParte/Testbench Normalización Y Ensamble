@@ -1,0 +1,17 @@
+module TestbenchNormaYEnsamble();
+logic signo;
+logic [24:0] mantisaSuma;
+logic [7:0] exponenteMayor;
+logic [7:0] exponenteFinal;
+logic [22:0] mantisaFinal;
+logic [31:0] resultado;
+   
+NormaYEnsamble dut(signo,mantisaSuma,exponenteMayor,exponenteFinal,mantisaFinal,resultado);
+initial begin
+signo = 0;
+mantisaSuma = 25'b1000000100000000000000000;
+exponenteMayor = 8'b10000001;
+#10;
+
+end
+endmodule
