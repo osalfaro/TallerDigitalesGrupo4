@@ -9,7 +9,8 @@ logic [7:0] expA, expB;
 logic [23:0] mantA, mantB;
 logic [7:0] desplazamiento, expMayor;
 logic expMenor;
-logic [23:0] mantDesplazada, mantNoDesplazada, suma;
+logic [23:0] mantDesplazada, mantNoDesplazada;
+logic [24:0] suma;
 
 assign signo = A[31];
 assign expA = A[30:23];
@@ -27,6 +28,6 @@ DesplazamientoMantisa despMantisas(desplazamiento,expMenor,mantA,mantB,mantDespl
 SumaMantisas sumaMant(mantNoDesplazada,mantDesplazada,suma);
 
 //normalizacion y ensamble
-NormaYEnsamble norm(signo,suma,expMayor,resultado);
+NormaYEnsamble norm(signo,suma,expMayor,Resultado);
 
 endmodule
