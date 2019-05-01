@@ -1,0 +1,21 @@
+module TestbenchDesplazamiento(
+    );
+    logic [7:0] desplazamiento; //cantidad que se desplaza la mantisa
+    logic exponenteMenor; //un bit para determinar cual exponente es menor (1=B es menor, 0=A es menor)
+    logic [23:0] mantA, mantB; //mantisa de cada numero
+    logic [23:0] mantDesplazada, mantNoDesplazada;
+    
+    DesplazamientoMantisa dut(desplazamiento,exponenteMenor,mantA,mantB,mantDesplazada,mantNoDesplazada);
+    initial begin
+        mantA=24'b110100011010001011000101;
+        mantB=24'b100011000010001011011111;
+        desplazamiento=5;
+        exponenteMenor=0; #10;
+        
+        exponenteMenor=1; #10;
+        
+        desplazamiento=8; exponenteMenor=0; #10;
+        
+        exponenteMenor=1; #10;
+    end
+endmodule
