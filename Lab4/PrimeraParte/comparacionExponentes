@@ -1,0 +1,20 @@
+module comparacionExponentes(
+input logic [7:0] expA, expB,
+output logic [7:0] desplazamiento,
+output logic exponenteMenor 
+);
+
+always_comb //Para poder utilizar el if
+begin
+    if(expA >= expB)
+        begin
+        desplazamiento = expA-expB;
+        exponenteMenor = 1;//El exponente menor será expB 
+        end
+     else
+        begin
+        desplazamiento = expB-expA;
+        exponenteMenor = 0;//El exponente menor será expA
+        end
+     end
+endmodule
