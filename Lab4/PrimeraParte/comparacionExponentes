@@ -1,6 +1,6 @@
 module comparacionExponentes(
 input logic [7:0] expA, expB,
-output logic [7:0] desplazamiento,
+output logic [7:0] desplazamiento, expMayor,
 output logic exponenteMenor 
 );
 
@@ -9,12 +9,14 @@ begin
     if(expA >= expB)
         begin
         desplazamiento = expA-expB;
-        exponenteMenor = 1;//El exponente menor será expB 
+        exponenteMenor = 1;//El exponente menor será expB
+        expMayor = expA;
         end
      else
         begin
         desplazamiento = expB-expA;
         exponenteMenor = 0;//El exponente menor será expA
+        expMayor = expB;
         end
      end
 endmodule
