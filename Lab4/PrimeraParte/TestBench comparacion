@@ -1,0 +1,15 @@
+module TestbenchExponentes();
+logic [7:0] expA, expB;
+logic [7:0] desplazamiento;
+logic exponenteMenor;
+
+
+comparacionExponentes dut(expA,expB,desplazamiento,exponenteMenor);
+
+initial begin 
+expA=10; expB=6; #10;
+expA=3; expB=8; #10;
+expA=4; expB=4; #10;
+
+end
+endmodule
