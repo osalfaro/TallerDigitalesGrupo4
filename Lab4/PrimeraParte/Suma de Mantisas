@@ -1,0 +1,9 @@
+module SumaMantisas(
+input logic [23:0] mantNoDesplazada,
+input logic [23:0] mantDesplazada,
+output logic [24:0] mantisaSuma
+    );
+
+assign mantisaSuma = mantNoDesplazada+mantDesplazada;
+
+endmodule
