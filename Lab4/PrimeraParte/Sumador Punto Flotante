@@ -1,0 +1,32 @@
+module sumadorPuntoFlotante(
+
+input logic [31:0] A,B,
+output logic [31:0] Resultado
+);
+
+logic signo;
+logic [7:0] expA, expB;
+logic [23:0] mantA, mantB;
+logic [7:0] desplazamiento, expMayor;
+logic expMenor;
+logic [23:0] mantDesplazada, mantNoDesplazada, suma;
+
+assign signo = A[31];
+assign expA = A[30:23];
+assign expB = B[30:23];
+assign mantA = {1'b1,A[22:0]};
+assign mantB = {1'b1,B[22:0]};
+
+//instanciando comparacion de exponentes
+comparacionExponentes comparacion(expA,expB,desplazamiento,expMayor, expMenor);
+
+//instanciando Desplazamiento de mantisas
+DesplazamientoMantisa despMantisas(desplazamiento,expMenor,mantA,mantB,mantDesplazada,mantNoDesplazada);
+
+//instanciando suma de mantisas
+SumaMantisas sumaMant(mantNoDesplazada,mantDesplazada,suma);
+
+//normalizacion y ensamble
+NormaYEnsamble norm(signo,suma,expMayor,resultado);
+
+endmodule
