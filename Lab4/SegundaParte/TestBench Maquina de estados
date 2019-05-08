@@ -1,0 +1,35 @@
+module TestMaquina(
+
+    );
+    
+    logic entrada;
+    
+    logic reset;
+    
+    logic clk;
+    
+    logic [1:0] salida;
+    MaquinaDeEstados dut(entrada, reset, clk,salida);
+    
+    initial begin 
+    
+    entrada = 1; reset = 1; clk = 0; #10;
+    entrada = 1; reset = 0; clk = 1; #10;
+    entrada = 1; reset = 0; clk = 0; #10;
+    entrada = 0; reset = 0; clk = 1; #10;
+    entrada = 1; reset = 0; clk = 1; #10;
+    entrada = 1; reset = 0; clk = 0; #10;
+    entrada = 0; reset = 0; clk = 1; #10;
+    entrada = 1; reset = 0; clk = 1; #10;
+    entrada = 0; reset = 0; clk = 0; #10;
+    entrada = 0; reset = 0; clk = 1; #10;
+    entrada = 1; reset = 0; clk = 0; #10;
+    entrada = 1; reset = 0; clk = 1; #10;
+    entrada = 1; reset = 0; clk = 1; #10;
+    entrada = 0; reset = 0; clk = 0; #10;
+    entrada = 1; reset = 0; clk = 1; #10;
+    entrada = 1; reset = 0; clk = 1; #10;
+    entrada = 1; reset = 1; clk = 1; #10;
+    
+    end
+endmodule
