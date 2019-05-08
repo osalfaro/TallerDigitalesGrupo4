@@ -4,7 +4,7 @@ module FF_D(
     input logic pushIn,
     output logic pushOut);
     
-    always_ff @(posedge clk)
+    always_ff @(posedge clk,posedge reset)
         if(reset) pushOut<='b0;
         else    pushOut<= pushIn;
 endmodule
