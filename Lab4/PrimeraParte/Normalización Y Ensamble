@@ -1,11 +1,13 @@
 module NormaYEnsamble(
 input logic signo,
 input logic [24:0] mantisaSuma,
-input logic [7:0] exponenteMayor,
-output logic [7:0] exponenteFinal,
-output logic [22:0] mantisaFinal,
+input logic [7:0] exponenteMayor, 
 output logic [31:0] resultado
 );
+
+logic [7:0] exponenteFinal;
+logic [22:0] mantisaFinal;
+
 
 logic [23:0] aux; 
 assign aux = mantisaSuma[24:1];
