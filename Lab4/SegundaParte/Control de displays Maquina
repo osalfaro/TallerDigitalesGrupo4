@@ -1,0 +1,153 @@
+module Contador #(parameter n=3)( //contador
+    input logic clk_contador,
+    output logic [n-1:0] cuenta //con parametro en 3, cuenta hasta 8
+    );
+    
+    always @(posedge clk_contador) //clock del contador
+        cuenta<=cuenta+1; //salida del contador
+endmodule
+
+module AnodoControl #(parameter n=3)( //contador
+    input logic [n-1:0] cuenta,
+    output logic [7:0] anodo
+    );
+    
+    always @(cuenta) //cada vez que el contador cambia
+        begin
+            case(cuenta)
+                3'b000:
+                    anodo=8'b11111110;
+                3'b001:
+                    anodo=8'b11111101;
+                3'b010:
+                    anodo=8'b11111011;
+                3'b011:
+                    anodo=8'b11110111;
+                3'b100:
+                    anodo=8'b11101111;
+                3'b101:
+                    anodo=8'b11011111;
+                3'b110:
+                    anodo=8'b10111111;
+                3'b111:
+                    anodo=8'b01111111;
+            endcase
+
+        end
+endmodule
+
+module SelectorDato #(parameter n=3)( //escoge el dato que va al convertidor
+    input logic [3:0] digito1, digito2, digito3, digito4, digito5, digito6, digito7, digito8,
+    input logic [n-1:0] cuenta,
+    output logic [3:0] digitoSalida
+    );
+    
+    always @(cuenta) //cada vez que el contador cambia
+        begin
+            case(cuenta) //se elige el dato que pasa al convertidor
+                3'b000:
+                    digitoSalida=digito1;
+                3'b001:
+                    digitoSalida=digito2;
+                3'b010:
+                    digitoSalida=digito3;
+                3'b011:
+                    digitoSalida=digito4;
+                3'b100:
+                    digitoSalida=digito5;
+                3'b101:
+                    digitoSalida=digito6;
+                3'b110:
+                    digitoSalida=digito7;
+                3'b111:
+                    digitoSalida=digito8;
+            endcase
+        end
+endmodule
+
+module Deco7segmentos(bin, a,b,c,d,e,f,g);
+    input [3:0]bin; //bin es un bus para los 4 bits de entrada
+    output logic a,b,c,d,e,f,g; //7 segmentos de salida
+    
+    //se asigna a cada salida la ecuación correspondiente segun los mapas K de cada variable
+    assign a = (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
+    assign b = (bin[2] & bin[1] & ~bin[0]) | (bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[0]) | (~bin[3] & bin[2] & ~bin[1] & bin[0]);
+    assign c = (bin[3] & bin[2] & ~bin[0]) | (bin[3] & bin[2] & bin[1]) | (~bin[3] & ~bin[2] & bin[1] & ~bin[0]);
+    assign d = (bin[2] & bin[1] & bin[0]) | (~bin[3] & ~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1] & ~bin[0]) | (bin[3] & ~bin[2] & bin[1] & ~bin[0]);
+    assign e = (~bin[3] & bin[0]) | (~bin[2] & ~bin[1] & bin[0]) | (~bin[3] & bin[2] & ~bin[1]);
+    assign f = (~bin[3] & ~bin[2] & bin[0]) | (~bin[3] & ~bin[2] & bin[1]) | (~bin[3] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & bin[0]);
+    assign g = (~bin[3] & ~bin[2] & ~bin[1]) | (~bin[3] & bin[2] & bin[1] & bin[0]) | (bin[3] & bin[2] & ~bin[1] & ~bin[0]);
+   
+endmodule
+
+module DivisorFrecuencia1 ( //para controlar los display
+    input wire clk, //clock de la fpga 100MHz
+    output logic clk2 //clock de salida con menor frecuencia
+);
+    integer contador=0;
+    
+    always @(posedge clk)
+    begin
+        if(contador==100000)
+            contador<=0;
+        else
+            contador<=contador+1;
+    end
+    
+    always @(posedge clk)
+    begin
+        if(contador==100000) //por cada mil clks de entrada cambia el clk de salida
+            clk2<=~clk2;
+    end
+endmodule
+
+module DivisorFrecuencia2 ( //para controlar la maquina de estados
+    input wire clk, //clock de la fpga 100MHz
+    output logic clk2 //clock de salida con menor frecuencia
+);
+    integer contador=0;
+    
+    always @(posedge clk)
+    begin
+        if(contador==100000000)
+            contador<=0;
+        else
+            contador<=contador+1;
+    end
+    
+    always @(posedge clk)
+    begin
+        if(contador==100000000) //por cada mil clks de entrada cambia el clk de salida
+            clk2<=~clk2;
+    end
+endmodule
+
+
+//todo tiene que entrar en 4 bits
+module ControlDisplays #(parameter n=3)( //el parametro es la cantidad de bits del contador
+    input wire clk,
+    //datos que le entran al modulo
+    input logic [3:0]digito1, digito2, digito3, digito4, digito5, digito6, digito7, digito8,
+    output wire [7:0] anodo, //activa el anodo correcto
+    output wire a,b,c,d,e,f,g //se conectan al display, los 7 segmentos
+);
+
+wire clk_contador; //sale de divisor y entra al contador
+wire [n-1:0] cuenta; //salida del contador
+wire [3:0] dato; //dato que entra al Deco
+//instanciando divisor
+DivisorFrecuencia Divisor(clk,clk_contador);
+
+//instanciando el contador
+Contador #(n)cont (clk_contador,cuenta);
+
+//instanciando anodo control
+AnodoControl #(n) Anodo (cuenta,anodo); // los bits de anodo se conectan a los anodos de los display
+
+//instanciando Selector de dato
+SelectorDato #(n) select (digito1, digito2, digito3, digito4, digito5, digito6, digito7, digito8,cuenta,dato);
+
+//instanciando deco
+
+Deco7segmentos deco (dato, a,b,c,d,e,f,g);
+endmodule
