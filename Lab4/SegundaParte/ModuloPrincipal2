@@ -1,0 +1,124 @@
+module ModuloPrincipal(
+/*  CLK es el clock de la FPGA de 100MHz
+    pushIn es el boton para cambiar de estado manualmente
+    enable es el switch para que funcione la maquina
+    modo es un switch para elegir si funciona de modo automatico o manual   */
+input logic CLK, pushIn, enable, modo,
+output logic [7:0] anodos, //controlan lo que se muestra en el display
+output logic Led1,Led2,Led3,Led4,
+output logic a,b,c,d,e,f,g
+    );
+    
+    logic pushOut; //salida del antirrebote
+    logic CLK1; //clock para el modo manual, 10kHz
+    logic CLK2; //clock de baja frecuencia para la maquina de estados en modo automatico
+    logic CLKmaquina; //clock que entra al clock de la maquina de estados
+    logic entradaMaquina; //entrada de la maquina
+    logic [1:0] salidaMaquina; //salida de la maquina
+    
+    
+    //instanciando divisores de frecuencia
+    DivisorFrecuencia1 divisorManual(CLK,CLK1);
+    DivisorFrecuencia2 divisorAuto(CLK,CLK2);
+    
+    //instanciando antirrebote
+    FF_D antirrebote(CLK1, 1'b0, pushIn,pushOut);
+        
+    //mux que selecciona el clock
+    Mux2a1 #(1) mux1(CLK1,CLK2,modo,CLKmaquina);
+    //Mux que selecciona la entrada
+    Mux2a1 #(1) mux2(pushOut,1'b1,modo,entradaMaquina);
+    
+    //instanciando maquina de estados
+    MaquinaDeEstados(entradaMaquina,1'b0,CLKmaquina,salidaMaquina);
+
+    //conexiones necesarias para el sumador
+    logic [31:0] A=0;
+    logic [31:0] B=0;
+    logic [31:0] Resultado;
+    logic signo;
+    logic [7:0] expA, expB;
+    logic [23:0] mantA, mantB;
+    logic [7:0] desplazamiento, expMayor;
+    logic expMenor;
+    logic [23:0] mantDesplazada, mantNoDesplazada;
+    logic [24:0] suma;
+    assign signo = A[31];
+    assign expA = A[30:23];
+    assign expB = B[30:23];
+    assign mantA = {1'b1,A[22:0]};
+    assign mantB = {1'b1,B[22:0]};
+    
+    //variables para el display
+    logic [3:0]digito1, digito2, digito3, digito4, digito5, digito6, digito7, digito8;
+    //instanciando etapas del sumador segun el estado de la maquina
+  /* always_comb
+    case (salidaMaquina)
+        2'b00:
+            comparacionExponentes comparacion(expA,expB,desplazamiento,expMayor, expMenor);
+        2'b01:
+            DesplazamientoMantisa despMantisas(desplazamiento,expMenor,mantA,mantB,mantDesplazada,mantNoDesplazada);
+        2'b10:
+            SumaMantisas sumaMant(mantNoDesplazada,mantDesplazada,suma);
+        2'b11:
+            NormaYEnsamble norm(signo,suma,expMayor,Resultado);
+            
+    endcase
+    */
+     always_comb
+        if(modo == 1'b1)
+          begin
+            case (salidaMaquina)
+                 2'b00:
+                    begin
+                    comparacionExponentes comparacion(expA,expB,desplazamiento,expMayor, expMenor);
+                    assign Led1 = 1;
+                    assign Led2 = 0;
+                    assign Led3 = 0;
+                    assign Led4 = 0;
+                    end
+                 2'b01:
+                    begin
+                    DesplazamientoMantisa despMantisas(desplazamiento,expMenor,mantA,mantB,mantDesplazada,mantNoDesplazada);
+                    assign Led1 = 0;
+                    assign Led2 = 1;
+                    assign Led3 = 0;
+                    assign Led4 = 0;
+                    end
+                2'b10:
+                    begin
+                    SumaMantisas sumaMant(mantNoDesplazada,mantDesplazada,suma);
+                    assign Led1 = 0;
+                    assign Led2 = 0;
+                    assign Led3 = 1;
+                    assign Led4 = 0;
+                    end
+                  2'b11:
+                    begin
+                    NormaYEnsamble norm(signo,suma,expMayor,Resultado);
+                    assign Led1 = 0;
+                    assign Led2 = 0;
+                    assign Led3 = 0;
+                    assign Led4 = 1;
+                    
+                    assign digito1 = Resultado[3:0];
+                    assign digito2 = Resultado[7:4];
+                    assign digito3 = Resultado[11:8];
+                    assign digito4 = Resultado[15:12];
+                    assign digito5 = Resultado[19:16];
+                    assign digito6 = Resultado[23:20];
+                    assign digito7 = Resultado[27:24];
+                    assign digito8 = Resultado[31:28];
+                    
+                    ControlDisplays Disp(CLK,digito1, digito2, digito3, digito4, digito5, 
+                    digito6, digito7, digito8,anodos,a,b,c,d,e,f,g);
+                    end
+               
+            endcase
+          end
+          else if (modo ==1'b0)
+               begin 
+                
+               end
+          
+endmodule
