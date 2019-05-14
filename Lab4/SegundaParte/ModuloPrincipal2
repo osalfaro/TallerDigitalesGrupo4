@@ -26,9 +26,9 @@ output logic a,b,c,d,e,f,g
     FF_D antirrebote(CLK1, 1'b0, pushIn,pushOut);
         
     //mux que selecciona el clock
-    Mux2a1 #(1) mux1(CLK1,CLK2,modo,CLKmaquina);
+    Mux2a1  mux1(CLK1,CLK2,modo,CLKmaquina);
     //Mux que selecciona la entrada
-    Mux2a1 #(1) mux2(pushOut,1'b1,modo,entradaMaquina);
+    Mux2a1  mux2(pushOut,1'b1,modo,entradaMaquina);
     
     //instanciando maquina de estados
     MaquinaDeEstados maq(entradaMaquina,reset,CLKmaquina,salidaMaquina);
