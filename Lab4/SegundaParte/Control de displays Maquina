@@ -1,3 +1,25 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 05/07/2019 04:43:06 PM
+// Design Name: 
+// Module Name: ControlDisplays
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module Contador #(parameter n=3)( //contador
     input logic clk_contador,
     output logic [n-1:0] cuenta //con parametro en 3, cuenta hasta 8
@@ -136,7 +158,7 @@ wire clk_contador; //sale de divisor y entra al contador
 wire [n-1:0] cuenta; //salida del contador
 wire [3:0] dato; //dato que entra al Deco
 //instanciando divisor
-DivisorFrecuencia Divisor(clk,clk_contador);
+DivisorFrecuencia1 Divisor(clk,clk_contador);
 
 //instanciando el contador
 Contador #(n)cont (clk_contador,cuenta);
