@@ -1,0 +1,31 @@
+module ControlDisplays ( //el parametro es la cantidad de bits del contador
+    input wire clk,
+    //datos que le entran al modulo
+    input logic [3:0]digito1, digito2, digito3, digito4, digito5, digito6, digito7, digito8,
+
+    output wire [7:0] anodo, //activa el anodo correcto
+    
+    output wire a,b,c,d,e,f,g //se conectan al display, los 7 segmentos
+);
+
+wire clk_contador; //sale de divisor y entra al contador
+wire [2:0] cuenta; //salida del contador
+wire [3:0] dato; //dato que entra al Deco
+//instanciando divisor
+
+DivisorFrecuencia1 Divisor(clk,clk_contador);
+
+//instanciando el contador
+            
+Contador cont (clk_contador,cuenta);
+
+//instanciando anodo control
+AnodoControl  Anodo (cuenta,anodo); // los bits de anodo se conectan a los anodos de los display
+
+//instanciando Selector de dato
+SelectorDato  select (digito1, digito2, digito3, digito4, digito5, digito6, digito7, digito8,cuenta,dato);
+
+//instanciando deco
+
+Deco7segmentos deco (dato, a,b,c,d,e,f,g);
+endmodule
