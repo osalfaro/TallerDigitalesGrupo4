@@ -1,0 +1,58 @@
+module ControlFlipFlops(
+    input logic [1:0] salidaMaquina, //salida de maquina de estados
+    output logic CLK_FFSelComp, CLK_FFCompDesp, CLK_FFDespSum, CLK_FFSumNorm, //clocks de los FF entre cada etapa
+    output logic led1,led2,led3,led4 //leds que indican la etapa
+);
+
+always_comb
+    begin
+    
+    //Condicion para el primer FF
+    if (salidaMaquina==2'b00)
+        begin
+        CLK_FFSelComp = 1;
+        led1 = 1;
+        end
+    else
+        begin
+        CLK_FFSelComp = 0;
+        led1 = 0;
+        end
+    //condicion para el segundo FF
+    if (salidaMaquina==2'b01)
+        begin
+        CLK_FFCompDesp = 1;
+        led2 = 1;
+        end
+    else
+        begin
+        CLK_FFCompDesp = 0;
+        led2 = 0;
+        end
+        
+    //condicion tercer FF
+    if (salidaMaquina==2'b10)
+        begin
+        CLK_FFDespSum = 1;
+        led3 = 1;
+        end
+    else
+        begin
+        CLK_FFDespSum = 0;
+        led3 = 0;
+        end
+        
+    //condicion cuarto FF
+    if (salidaMaquina==2'b11)
+        begin
+        CLK_FFSumNorm = 1;
+        led4 = 1;
+        end
+    else
+        begin
+        CLK_FFSumNorm = 0;
+        led4 = 0;
+        end
+
+    end
+endmodule
