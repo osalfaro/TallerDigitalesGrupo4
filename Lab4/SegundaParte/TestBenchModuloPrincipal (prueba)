@@ -1,0 +1,61 @@
+module TestModuloPrincipal(
+
+    );
+    
+logic CLK, pushIn, enable, modo, reset;
+logic [7:0] anodos; //controlan lo que se muestra en el display
+logic Led1,Led2,Led3,Led4,LedAviso;
+logic a,b,c,d,e,f,g;
+    
+    ModuloPrincipal dut(CLK,pushIn,enable,modo,reset,anodos,Led1,Led2,Led3,Led4,LedAviso,a,b,c,d,e,f,g);
+    
+    initial begin 
+    CLK=0;
+    enable=0;
+    reset=0;
+    modo=0;
+    pushIn=0;
+    #20;
+    
+    CLK=~CLK;
+    #10;
+    pushIn=1;
+    #10;
+    
+    CLK=~CLK;
+    #10;
+    pushIn=0;
+    #10;
+    
+    CLK=~CLK;
+    #10;
+    pushIn=1;
+    #10;
+    
+    CLK=~CLK;
+    #10;
+    pushIn=0;
+    #10;
+    
+    CLK=~CLK;
+    #10;
+    pushIn=1;
+    #10;
+    
+    CLK=~CLK;
+    #10;
+    pushIn=0;
+    #10;
+    
+    CLK=~CLK;
+    #10;
+    pushIn=1;
+    #10;
+    
+    CLK=~CLK;
+    #10;
+    pushIn=1;
+    #10;
+    
+    end
+endmodule
