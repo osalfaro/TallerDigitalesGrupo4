@@ -1,0 +1,28 @@
+module AnodoControl( //contador
+    input logic  [2:0] cuenta,
+    output logic [7:0] anodo
+    );
+    
+    always @(cuenta) //cada vez que el contador cambia
+        begin
+            case(cuenta)
+                3'b000:
+                    anodo=8'b11111110;
+                3'b001:
+                    anodo=8'b11111101;
+                3'b010:
+                    anodo=8'b11111011;
+                3'b011:
+                    anodo=8'b11110111;
+                3'b100:
+                    anodo=8'b11101111;
+                3'b101:
+                    anodo=8'b11011111;
+                3'b110:
+                    anodo=8'b10111111;
+                3'b111:
+                    anodo=8'b01111111;
+            endcase
+
+        end
+endmodule
