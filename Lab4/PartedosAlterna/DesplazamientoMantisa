@@ -1,0 +1,24 @@
+module DesplazamientoMantisa(
+    input logic [7:0] desplazamiento, //cantidad que se desplaza la mantisa
+    input logic exponenteMenor, //un bit para determinar cual exponente es menor (1=B es menor, 0=A es menor)
+    input logic [23:0] mantA, mantB, //mantisa de cada numero
+    output logic [23:0] mantDesplazada, mantNoDesplazada, //la mantisa no desplazada es la que se debe sumar con la desplazada
+    //las mantisas son de 24 bits porque incluye el implicito
+    output logic [2:0] contador
+    );
+    
+    always_comb begin
+    contador = contador+1;
+    if (exponenteMenor==0)
+        begin
+        mantDesplazada = mantA>>desplazamiento;
+        mantNoDesplazada=mantB;
+        end
+    else
+        begin
+        mantDesplazada = mantB>>desplazamiento;
+        mantNoDesplazada=mantA;
+        end
+    
+    end
+endmodule
