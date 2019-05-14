@@ -3,10 +3,10 @@ module ModuloPrincipal(
     pushIn es el boton para cambiar de estado manualmente
     enable es el switch para que funcione la maquina
     modo es un switch para elegir si funciona de modo automatico o manual   */
-input logic CLK, pushIn, enable, modo,
+input logic CLK, pushIn, enable, modo, reset,
 input logic [3:0] opcion,
 output logic [7:0] anodos, //controlan lo que se muestra en el display
-output logic Led1,Led2,Led3,Led4,
+output logic Led1,Led2,Led3,Led4, LedAviso,
 output logic a,b,c,d,e,f,g
     );
     
@@ -31,7 +31,7 @@ output logic a,b,c,d,e,f,g
     Mux2a1 #(1) mux2(pushOut,1'b1,modo,entradaMaquina);
     
     //instanciando maquina de estados
-    MaquinaDeEstados maq(entradaMaquina,1'b0,CLKmaquina,salidaMaquina);
+    MaquinaDeEstados maq(entradaMaquina,reset,CLKmaquina,salidaMaquina);
     
     //Instanciando Tabla con los operandos a escoger
     logic [31:0] A;
