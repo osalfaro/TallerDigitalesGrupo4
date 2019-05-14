@@ -1,0 +1,28 @@
+module SelectorDato ( //escoge el dato que va al convertidor
+    input logic [3:0] digito1, digito2, digito3, digito4, digito5, digito6, digito7, digito8,
+    input logic [2:0]cuenta,
+    output logic [3:0] digitoSalida
+    );
+    
+    always @(cuenta) //cada vez que el contador cambia
+        begin
+            case(cuenta) //se elige el dato que pasa al convertidor
+                3'b000:
+                    digitoSalida=digito1;
+                3'b001:
+                    digitoSalida=digito2;
+                3'b010:
+                    digitoSalida=digito3;
+                3'b011:
+                    digitoSalida=digito4;
+                3'b100:
+                    digitoSalida=digito5;
+                3'b101:
+                    digitoSalida=digito6;
+                3'b110:
+                    digitoSalida=digito7;
+                3'b111:
+                    digitoSalida=digito8;
+            endcase
+        end
+endmodule
