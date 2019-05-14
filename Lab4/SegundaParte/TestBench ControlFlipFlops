@@ -1,0 +1,23 @@
+module TestBench();
+
+logic [1:0] salidaMaquina; //salida de maquina de estados
+logic CLK_FFSelComp, CLK_FFCompDesp, CLK_FFDespSum, CLK_FFSumNorm; //clocks de los FF entre cada etapa
+logic led1,led2,led3,led4; //leds que indican la etapa
+
+ControlFlipFlops dut(salidaMaquina,CLK_FFSelComp,CLK_FFCompDesp,CLK_FFDespSum,CLK_FFSumNorm,led1,led2,led3,led4);
+initial begin
+    
+    salidaMaquina=2'b00; #10;
+    
+    salidaMaquina=2'b01; #10;
+    
+    salidaMaquina=2'b10; #10;
+    
+    salidaMaquina=2'b11; #10;
+    
+    salidaMaquina=2'b00; #10;
+    
+    salidaMaquina=2'b01; #10;
+    
+end
+endmodule
