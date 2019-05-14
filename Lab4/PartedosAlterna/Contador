@@ -1,0 +1,7 @@
+module Contador(input clk_contador, 
+                output logic [2:0]cuenta
+    );
+    
+    always @(clk_contador)
+        cuenta = cuenta+1;
+endmodule
