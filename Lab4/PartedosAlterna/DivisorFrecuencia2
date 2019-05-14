@@ -1,0 +1,20 @@
+module DivisorFrecuencia2( input wire clk, output logic CLK1
+
+    );
+    logic contador;
+    
+    always @(posedge clk)
+        begin
+            if(contador == 100000000)
+                contador <= 0;
+            else
+                contador <= contador +1;
+        end
+    
+    always@(posedge clk)
+        begin
+            if(contador == 100000000)
+                CLK1 <= ~CLK1;
+        end
+        
+endmodule
