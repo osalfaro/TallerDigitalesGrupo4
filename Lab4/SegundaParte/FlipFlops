@@ -1,0 +1,86 @@
+module FFSelComp(
+
+    input logic clk,
+    input logic reset,
+    input logic [31:0] Ain,Bin,
+    output logic [31:0] Aout,Bout);
+    
+    always_ff @(posedge clk,posedge reset)
+        if(reset) begin
+            Aout<=0;
+            Bout<=0;
+            end
+        else  begin
+          Aout<= Ain;
+          Bout<=Bin;
+          end
+endmodule
+
+module FFCompDesp(
+
+    input logic clk,
+    input logic reset,
+    input logic [7:0] desplazamientoIn,expMenorIn,
+    input logic [22:0] mantAIn, mantBIn,
+    output logic [7:0] desplazamientoOut,expMenorOut,
+    output logic [22:0] mantAOut, mantBOut);
+    
+    always_ff @(posedge clk,posedge reset)
+        if(reset) begin
+            desplazamientoOut<=0;
+            expMenorOut<=0;
+            mantAOut<=0;
+            mantBOut<=0;
+            end
+        else  begin
+          desplazamientoOut<=desplazamientoIn;
+            expMenorOut<=expMenorIn;
+            mantAOut<=mantAIn;
+            mantBOut<=mantBIn;
+          end
+endmodule
+
+module FFDespSum(
+
+    input logic clk,
+    input logic reset,
+    input logic [23:0] mantDesplazadaIn,mantNoDesplazadaIn,
+    output logic [23:0] mantDesplazadaOut, mantNoDesplazadaOut);
+    
+    
+    always_ff @(posedge clk,posedge reset)
+        if(reset) begin
+            mantDesplazadaOut<=0;
+            mantNoDesplazadaOut<=0;
+            end
+        else  begin
+            mantDesplazadaOut<=mantDesplazadaIn;
+            mantNoDesplazadaOut<=mantNoDesplazadaIn;
+          end
+endmodule
+
+
+module FFSumNorm(
+
+    input logic clk,
+    input logic reset,
+    input logic [24:0] sumaIn,
+    input logic signoIn,
+    input logic [7:0] expMayorIn,
+    output logic [24:0] sumaOut,
+    output logic signoOut,
+    output logic [7:0] expMayorOut);
+    
+    
+    always_ff @(posedge clk,posedge reset)
+        if(reset) begin
+            sumaOut<=0;
+            signoOut<=0;
+            expMayorOut<=0;
+            end
+        else  begin
+            sumaOut<=sumaIn;
+            signoOut<=signoIn;
+            expMayorOut<=expMayorIn;
+          end
+endmodule
