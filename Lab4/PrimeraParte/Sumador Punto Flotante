@@ -1,8 +1,12 @@
 module sumadorPuntoFlotante(
 
-input logic [31:0] A,B,
+input logic [3:0] opcion,
 output logic [31:0] Resultado
 );
+logic [31:0] A;
+logic [31:0] B;
+TablaPuntoFlotante tabla(opcion,A,B);
+
 
 logic signo;
 logic [7:0] expA, expB;
