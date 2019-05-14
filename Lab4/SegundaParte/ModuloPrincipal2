@@ -1,4 +1,4 @@
-module ModuloPrincipal(
+module ModuloPrincipal2(
 /*  CLK es el clock de la FPGA de 100MHz
     pushIn es el boton para cambiar de estado manualmente
     enable es el switch para que funcione la maquina
@@ -26,9 +26,9 @@ output logic a,b,c,d,e,f,g
     FF_D antirrebote(CLK1, 1'b0, pushIn,pushOut);
         
     //mux que selecciona el clock
-    Mux2a1  mux1(CLK1,CLK2,modo,CLKmaquina);
+    Mux2a1 mux1(CLK1,CLK2,modo,CLKmaquina);
     //Mux que selecciona la entrada
-    Mux2a1  mux2(pushOut,1'b1,modo,entradaMaquina);
+    Mux2a1 mux2(pushOut,1'b1,modo,entradaMaquina);
     
     //instanciando maquina de estados
     MaquinaDeEstados maq(entradaMaquina,reset,CLKmaquina,salidaMaquina);
@@ -54,76 +54,106 @@ output logic a,b,c,d,e,f,g
     assign mantA = {1'b1,A[22:0]};
     assign mantB = {1'b1,B[22:0]};
     
+    //contador para encender bits
+    logic [2:0] contador;
+    assign contador = 3'b000;
     //variables para el display
     logic [3:0]digito1, digito2, digito3, digito4, digito5, digito6, digito7, digito8;
-    //instanciando etapas del sumador segun el estado de la maquina
-  /* always_comb
-    case (salidaMaquina)
+    
+     //instanciando etapas del sumador 
+    
+  comparacionExponentes comparacion(expA,expB,contador,desplazamiento,expMayor, expMenor);
+  DesplazamientoMantisa despMantisas(desplazamiento,expMenor,mantA,mantB,mantDesplazada,mantNoDesplazada,contador);
+  SumaMantisas sumaMant(mantNoDesplazada,mantDesplazada,suma,contador);
+  NormaYEnsamble norm(signo,suma,expMayor,Resultado,contador);
+  
+    //aumentando contador y haciendo uso de máquina de estados
+  
+  always_comb
+    case(salidaMaquina)
         2'b00:
-            comparacionExponentes comparacion(expA,expB,desplazamiento,expMayor, expMenor);
-        2'b01:
-            DesplazamientoMantisa despMantisas(desplazamiento,expMenor,mantA,mantB,mantDesplazada,mantNoDesplazada);
-        2'b10:
-            SumaMantisas sumaMant(mantNoDesplazada,mantDesplazada,suma);
-        2'b11:
-            NormaYEnsamble norm(signo,suma,expMayor,Resultado);
-            
-    endcase
-    */
-     always_comb
-        if(modo == 1'b1)
-          begin
-            case (salidaMaquina)
-                 2'b00:
-                    begin
-                    comparacionExponentes comparacion(expA,expB,desplazamiento,expMayor, expMenor);
-                    assign Led1 = 1;
-                    assign Led2 = 0;
-                    assign Led3 = 0;
-                    assign Led4 = 0;
-                    end
-                 2'b01:
-                    begin
-                    DesplazamientoMantisa despMantisas(desplazamiento,expMenor,mantA,mantB,mantDesplazada,mantNoDesplazada);
-                    assign Led1 = 0;
-                    assign Led2 = 1;
-                    assign Led3 = 0;
-                    assign Led4 = 0;
-                    end
-                2'b10:
-                    begin
-                    SumaMantisas sumaMant(mantNoDesplazada,mantDesplazada,suma);
-                    assign Led1 = 0;
-                    assign Led2 = 0;
-                    assign Led3 = 1;
-                    assign Led4 = 0;
-                    end
-                  2'b11:
-                    begin
-                    NormaYEnsamble norm(signo,suma,expMayor,Resultado);
-                    assign Led1 = 0;
-                    assign Led2 = 0;
-                    assign Led3 = 0;
-                    assign Led4 = 1;
-                    
-                    assign digito1 = Resultado[3:0];
-                    assign digito2 = Resultado[7:4];
-                    assign digito3 = Resultado[11:8];
-                    assign digito4 = Resultado[15:12];
-                    assign digito5 = Resultado[19:16];
-                    assign digito6 = Resultado[23:20];
-                    assign digito7 = Resultado[27:24];
-                    assign digito8 = Resultado[31:28];
-                    
-                    ControlDisplays Disp(CLK,digito1, digito2, digito3, digito4, digito5, 
-                    digito6, digito7, digito8,anodos,a,b,c,d,e,f,g);
-                    end
-               
-            endcase
-          end
-          else if (modo ==1'b0)
-               begin 
+            begin
+            if (contador == 3'b001)
+                begin 
                 
-               end
-          
+                digito1 = 4'b0000;
+                digito2 = 4'b0000;
+                digito3 = 4'b0000;
+                digito4 = 4'b0000;
+                digito5 = 4'b0000;
+                digito6 = 4'b0000;
+                digito7 = 4'b0000;
+                digito8 = 4'b0000;
+               
+                Led1 = 1;
+                Led2 = 0;
+                Led3 = 0;
+                Led4 = 0;
+                end
+             end
+        2'b01: 
+           begin
+            if (contador == 3'b010)
+              begin
+                
+                digito1 = 4'b0000;
+                digito2 = 4'b0000;
+                digito3 = 4'b0000;
+                digito4 = 4'b0000;
+                digito5 = 4'b0000;
+                digito6 = 4'b0000;
+                digito7 = 4'b0000;
+                digito8 = 4'b0000;
+                Led1 = 1;
+                Led2 = 1;
+                Led3 = 0;
+                Led4 = 0;
+              end
+            end
+        2'b10:
+            begin
+            if (contador == 3'b011)
+                begin
+                
+                digito1 = 4'b0000;
+                digito2 = 4'b0000;
+                digito3 = 4'b0000;
+                digito4 = 4'b0000;
+                digito5 = 4'b0000;
+                digito6 = 4'b0000;
+                digito7 = 4'b0000;
+                digito8 = 4'b0000;
+                Led1 = 1; 
+                Led2 = 1;
+                Led3 = 1;
+                Led4 = 0;
+                end
+            end
+        2'b11:
+           begin
+           if (contador == 3'b100)
+              begin
+              
+              Led1 = 1;
+              Led2 = 1;
+              Led3 = 1;
+              Led4 = 1;
+              
+              digito1 = Resultado[3:0];
+              digito2 = Resultado[7:4];
+              digito3 = Resultado[11:8];
+              digito4 = Resultado[15:12];
+              digito5 = Resultado[19:16];
+              digito6 = Resultado[23:20];
+              digito7 = Resultado[27:24];
+              digito8 = Resultado[31:28];
+                                  
+
+              end
+           end
+        endcase
+        
+           ControlDisplays Disp(CLK,digito1, digito2, digito3, digito4, digito5, 
+          digito6, digito7, digito8,anodos,a,b,c,d,e,f,g);
+
 endmodule
