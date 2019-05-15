@@ -1,47 +1,57 @@
 module FFSelComp(
 
+    input logic enable,
     input logic clk,
     input logic reset,
     input logic [31:0] Ain,Bin,
     output logic [31:0] Aout,Bout);
     
     always_ff @(posedge clk,posedge reset)
-        if(reset) begin
-            Aout<=0;
-            Bout<=0;
-            end
-        else  begin
-          Aout<= Ain;
-          Bout<=Bin;
-          end
+        if(enable)
+        begin
+            if(reset) begin
+                Aout<=0;
+                Bout<=0;
+                end
+            else  begin
+              Aout<= Ain;
+              Bout<=Bin;
+              end
+          
+        end
+        
 endmodule
 
 module FFCompDesp(
-
+    input logic enable,
     input logic clk,
     input logic reset,
     input logic [7:0] desplazamientoIn,expMenorIn,
-    input logic [22:0] mantAIn, mantBIn,
+    input logic [23:0] mantAIn, mantBIn,
     output logic [7:0] desplazamientoOut,expMenorOut,
-    output logic [22:0] mantAOut, mantBOut);
+    output logic [23:0] mantAOut, mantBOut);
     
     always_ff @(posedge clk,posedge reset)
-        if(reset) begin
-            desplazamientoOut<=0;
-            expMenorOut<=0;
-            mantAOut<=0;
-            mantBOut<=0;
-            end
-        else  begin
-          desplazamientoOut<=desplazamientoIn;
-            expMenorOut<=expMenorIn;
-            mantAOut<=mantAIn;
-            mantBOut<=mantBIn;
-          end
+        if(enable)
+        begin
+            if(reset) begin
+                desplazamientoOut<=0;
+                expMenorOut<=0;
+                mantAOut<=0;
+                mantBOut<=0;
+                end
+            else  begin
+              desplazamientoOut<=desplazamientoIn;
+                expMenorOut<=expMenorIn;
+                mantAOut<=mantAIn;
+                mantBOut<=mantBIn;
+              end
+              
+        end
 endmodule
 
 module FFDespSum(
-
+    input logic enable,
     input logic clk,
     input logic reset,
     input logic [23:0] mantDesplazadaIn,mantNoDesplazadaIn,
@@ -49,19 +59,22 @@ module FFDespSum(
     
     
     always_ff @(posedge clk,posedge reset)
-        if(reset) begin
-            mantDesplazadaOut<=0;
-            mantNoDesplazadaOut<=0;
-            end
-        else  begin
-            mantDesplazadaOut<=mantDesplazadaIn;
-            mantNoDesplazadaOut<=mantNoDesplazadaIn;
-          end
+        if(enable)
+        begin
+            if(reset) begin
+                mantDesplazadaOut<=0;
+                mantNoDesplazadaOut<=0;
+                end
+            else  begin
+                mantDesplazadaOut<=mantDesplazadaIn;
+                mantNoDesplazadaOut<=mantNoDesplazadaIn;
+              end
+        end                 
 endmodule
 
 
 module FFSumNorm(
-
+    input logic enable,
     input logic clk,
     input logic reset,
     input logic [24:0] sumaIn,
@@ -73,14 +86,17 @@ module FFSumNorm(
     
     
     always_ff @(posedge clk,posedge reset)
-        if(reset) begin
-            sumaOut<=0;
-            signoOut<=0;
-            expMayorOut<=0;
-            end
-        else  begin
-            sumaOut<=sumaIn;
-            signoOut<=signoIn;
-            expMayorOut<=expMayorIn;
-          end
+        if(enable)
+        begin
+            if(reset) begin
+                sumaOut<=0;
+                signoOut<=0;
+                expMayorOut<=0;
+                end
+            else  begin
+                sumaOut<=sumaIn;
+                signoOut<=signoIn;
+                expMayorOut<=expMayorIn;
+              end
+        end              
 endmodule
