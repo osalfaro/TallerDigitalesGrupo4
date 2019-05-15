@@ -76,4 +76,16 @@ module ModuloPrincipal(
     logic [24:0] suma;
     SumaMantisas sumaMant(mantNoDesplazadaOut,mantDesplazadaOut,suma);
 
+    //instanciando FF4 de suma de mantisas a normalizacion y ensamble
+    logic signo;
+    assign signo = A[31];// el signo de A, porque B tiene el mismo signo
+    logic [24:0] sumaOut;  
+    logic signoOut;
+    logic [7:0] expMayorOut;
+    FFSumNorm(CLK_FFSumNorm,reset,suma,signo,expMayor,sumaOut,signoOut,expMayorOut);
+
+    //instanciando normalizacion y ensamble
+    logic [31:0] Resultado;
+    NormaYEnsamble norm(signoOut,sumaOut,expMayorOut,Resultado);
+    
 endmodule
