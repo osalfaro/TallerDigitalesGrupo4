@@ -13,11 +13,11 @@ always_comb
 begin
 if(mantisaSuma[24]==1)
     begin
-    assign aux = mantisaSuma[24:1];
+    aux = mantisaSuma[24:1];
     end
 else
     begin
-    assign aux=mantisaSuma[23:0];
+    aux=mantisaSuma[23:0];
     end  
 end
 
