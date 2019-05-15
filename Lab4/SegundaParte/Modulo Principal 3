@@ -1,0 +1,79 @@
+module ModuloPrincipal(
+    input logic CLK, //clock de la FPGA 100MHz
+    input logic reset, // reset para la maquina y los FF
+    input logic pushIn, //boton para el modo manual
+    input logic modo, //para elegir modo manual o automatico
+    input logic [3:0] opcion, //para elegir los datos A y B
+    output logic Led1,Led2,Led3,Led4, //muestran en cual estapa esta la maquina
+    output logic LedAviso, //indica cuando se terminó una etapa en modo manual
+    output logic a,b,c,d,e,f,g, //controlan los display (catodos)
+    output logic [7:0] anodos //controlan lo que se muestra en el display
+    );
+    
+    logic pushOut; //salida del antirrebote
+    logic CLK1; //clock para el modo manual, 10kHz
+    logic CLK2; //clock de baja frecuencia para la maquina de estados en modo automatico
+    logic CLKmaquina; //clock que entra al clock de la maquina de estados
+    logic entradaMaquina; //entrada de la maquina
+    logic [1:0] salidaMaquina; //salida de la maquina
+    
+    
+    //instanciando divisores de frecuencia
+    DivisorFrecuencia1 divisorManual(CLK,CLK1); //CLK1 1 kHz
+    DivisorFrecuencia2 divisorAuto(CLK,CLK2); // CLK2 1 Hz
+    
+    //instanciando antirrebote
+    FF_D antirrebote(CLK1, reset, pushIn,pushOut);
+        
+    //mux que selecciona el clock
+    Mux2a1 mux1(CLK1,CLK2,modo,CLKmaquina);
+    //Mux que selecciona la entrada
+    Mux2a1 mux2(pushOut,1'b1,modo,entradaMaquina);
+    
+    //instanciando maquina de estados
+    MaquinaDeEstados maq(entradaMaquina,reset,CLKmaquina,salidaMaquina);
+    
+    //Instanciando Tabla con los operandos a escoger
+    logic [31:0] A;
+    logic [31:0] B;
+    TablaPuntoFlotante tabla(opcion,A,B);
+    
+    //instanciando el control de los FF
+    logic CLK_FFSelComp, CLK_FFCompDesp, CLK_FFDespSum, CLK_FFSumNorm;
+    ControlFlipFlops(salidaMaquina,CLK_FFSelComp, CLK_FFCompDesp, CLK_FFDespSum, CLK_FFSumNorm,Led1,Led2,Led3,Led4
+);
+    
+    //Instanciando FF1 de Seleccion a Comparacion
+    logic [31:0] Aout; //datos que salen del FF1
+    logic [31:0] Bout;
+    FFSelComp FF1(CLK_FFSelComp, reset, A,B, Aout,Bout);
+    
+    //instanciando comparacion
+    logic [7:0] expA, expB;
+    logic [7:0] desplazamiento, expMayor;
+    logic expMenor;
+    assign expA = Aout[30:23];
+    assign expB = Bout[30:23];
+    comparacionExponentes comparacion(expA,expB,desplazamiento,expMayor,expMenor);
+    
+    //instanciando FF2 de comparacion a Despazamiento de mantisas
+    logic [23:0] mantA, mantB;
+    assign mantA = {1'b1,A[22:0]};
+    assign mantB = {1'b1,B[22:0]};
+    logic [7:0] desplazamientoOut,expMenorOut;
+    logic [22:0] mantAOut, mantBOut;
+    FFCompDesp FF2(CLK_FFCompDesp, reset, desplazamiento,expMenor,mantA,mantB,desplazamientoOut,expMenorOut,mantAOut,mantBOut);
+    
+    //instanciando desplazamiento de mantisa
+    logic [23:0] mantDesplazada, mantNoDesplazada;
+    DesplazamientoMantisa despMantisas(desplazamientoOut,expMenorOut,mantAOut,mantBOut,mantDesplazada,mantNoDesplazada);
+
+    //instanciando FF3 de Desplazamiento a Suma de mantisas
+    logic [23:0] mantDesplazadaOut, mantNoDesplazadaOut;
+    FFDespSum FF3(CLK_FFDespSum, reset,mantDesplazada,mantNoDesplazada,mantDesplazadaOut, mantNoDesplazadaOut);
+
+    //instanciando Suma de mantisas
+    logic [24:0] suma;
+    SumaMantisas sumaMant(mantNoDesplazadaOut,mantDesplazadaOut,suma);
+
+endmodule
