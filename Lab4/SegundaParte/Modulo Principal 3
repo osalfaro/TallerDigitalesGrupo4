@@ -32,7 +32,7 @@ module ModuloPrincipal(
     Mux2a1 mux2(pushOut,1'b1,modo,entradaMaquina);
     
     //instanciando maquina de estados
-    MaquinaDeEstados maq(entradaMaquina,reset,CLKmaquina,salidaMaquina);
+    MaquinaDeEstados maq(enable,entradaMaquina,reset,CLKmaquina,salidaMaquina);
     
     //Instanciando Tabla con los operandos a escoger
     logic [31:0] A;
@@ -47,7 +47,7 @@ module ModuloPrincipal(
     //Instanciando FF1 de Seleccion a Comparacion
     logic [31:0] Aout; //datos que salen del FF1
     logic [31:0] Bout;
-    FFSelComp FF1(enable,CLK_FFSelComp, reset, A,B, Aout,Bout);
+    FFSelComp FF1(1,CLK_FFSelComp, reset, A,B, Aout,Bout);
     
     //instanciando comparacion
     logic [7:0] expA, expB;
@@ -64,7 +64,7 @@ module ModuloPrincipal(
     logic [7:0] desplazamientoOut;
     logic expMenorOut;
     logic [23:0] mantAOut, mantBOut;
-    FFCompDesp FF2(enable,CLK_FFCompDesp, reset, desplazamiento,expMenor,mantA,mantB,desplazamientoOut,expMenorOut,mantAOut,mantBOut);
+    FFCompDesp FF2(1,CLK_FFCompDesp, reset, desplazamiento,expMenor,mantA,mantB,desplazamientoOut,expMenorOut,mantAOut,mantBOut);
     
     //instanciando desplazamiento de mantisa
     logic [23:0] mantDesplazada, mantNoDesplazada;
@@ -72,7 +72,7 @@ module ModuloPrincipal(
 
     //instanciando FF3 de Desplazamiento a Suma de mantisas
     logic [23:0] mantDesplazadaOut, mantNoDesplazadaOut;
-    FFDespSum FF3(enable,CLK_FFDespSum, reset,mantDesplazada,mantNoDesplazada,mantDesplazadaOut, mantNoDesplazadaOut);
+    FFDespSum FF3(1,CLK_FFDespSum, reset,mantDesplazada,mantNoDesplazada,mantDesplazadaOut, mantNoDesplazadaOut);
 
     //instanciando Suma de mantisas
     logic [24:0] suma;
@@ -84,7 +84,7 @@ module ModuloPrincipal(
     logic [24:0] sumaOut;  
     logic signoOut;
     logic [7:0] expMayorOut;
-    FFSumNorm FF4(enable,CLK_FFSumNorm,reset,suma,signo,expMayor,sumaOut,signoOut,expMayorOut);
+    FFSumNorm FF4(1,CLK_FFSumNorm,reset,suma,signo,expMayor,sumaOut,signoOut,expMayorOut);
 
     //instanciando normalizacion y ensamble
     logic [31:0] Resultado;
