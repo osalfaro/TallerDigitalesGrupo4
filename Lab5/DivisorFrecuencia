@@ -1,6 +1,6 @@
 module DivisorFrecuencia #(parameter n = 1)(
     input wire clk, //clock de la fpga 100MHz
-    output logic clk2 //clock de salida con menor frecuencia
+    output logic clk2 = 0 //clock de salida con menor frecuencia
 );
 //n = (100MHz/2*frecuencia que quiero) - 1
 
