@@ -1,0 +1,22 @@
+module DivisorFrecuencia #(parameter n = 1)(
+    input wire clk, //clock de la fpga 100MHz
+    output logic clk2 //clock de salida con menor frecuencia
+);
+//n = (100MHz/2*frecuencia que quiero) - 1
+
+    integer contador=0;
+    
+    always @(posedge clk)
+    begin
+        if(contador==n)
+            contador<=0;
+        else
+            contador<=contador+1;
+    end
+    
+    always @(posedge clk)
+    begin
+        if(contador==n) //por cada mil clks de entrada cambia el clk de salida
+            clk2<=~clk2;
+    end
+endmodule
