@@ -1,0 +1,14 @@
+module contadorVertical(
+    input logic clk25Mhz,
+    input logic enableVcounter,
+    output logic [15:0] contadorVertical =0
+    );
+    
+    always @(posedge clk25Mhz) begin
+        if(enableVcounter == 1) begin
+            if(contadorVertical < 524)
+                contadorVertical =contadorVertical + 1;
+            else contadorVertical = 0;
+        end
+    end
+endmodule
