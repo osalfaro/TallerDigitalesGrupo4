@@ -1,0 +1,17 @@
+module contadorHorizontal(
+    input logic clk25Mhz,
+    output logic enableVcounter = 0,
+    output logic [15:0] contadorHorizontal = 0
+    );
+    
+    always @(posedge clk25Mhz) begin
+        if(contadorHorizontal < 799) begin
+            contadorHorizontal =contadorHorizontal+1;
+            enableVcounter =0; //Se deshabilita el contador vertical
+        end
+        else begin
+            contadorHorizontal =0; // Reset al contador horizontal
+            enableVcounter =1; // Señal que cuenta en vertical
+        end
+     end
+endmodule
