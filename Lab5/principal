@@ -1,0 +1,27 @@
+module principal(
+    input logic clk,
+    output logic Hsync,
+    output logic Vsync,
+    output logic [3:0] Red,
+    output logic [3:0] Green,
+    output logic [3:0] Blue 
+    );
+    
+    wire clk25Mhz;
+    wire enableVcounter;
+    wire [15:0] contadorHorizontal;
+    wire [15:0] contadorVertical;
+    
+    DivisorFrecuencia divisor(clk,clk25Mhz); //Instanciar
+    contadorHorizontal horizontal(clk25Mhz,enableVcounter,contadorHorizontal);
+    contadorVertical vertical(clk25Mhz,enableVcounter,contadorVertical);
+    
+    //salidas
+    assign Hsync = (contadorHorizontal<96) ? 1:0;
+    assign Vsync = (contadorVertical<2) ? 1:0;
+    
+    //Colores
+    assign Red = (contadorHorizontal <784 && contadorHorizontal >143 && contadorVertical <515 && contadorVertical >34) ? 4'hF:0;
+    assign Green = (contadorHorizontal <784 && contadorHorizontal >143 && contadorVertical <515 && contadorVertical >34) ? 4'hF:0;
+    assign Blue = (contadorHorizontal <784 && contadorHorizontal >143 && contadorVertical <515 && contadorVertical >34) ? 4'hF:0;
+endmodule
