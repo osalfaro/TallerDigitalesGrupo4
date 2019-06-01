@@ -21,40 +21,47 @@ module principal(
     assign Hsync = (contadorHorizontal<96) ? 1:0;
     assign Vsync = (contadorVertical<2) ? 1:0;
     
+    //dimensiones
+    integer limite_x1 = 144;
+    integer limite_x2 =464;
+    integer limite_x3 =784;
+    
+    integer limite_y1 = 35;
+    integer limite_y2 = 275;
+    integer limite_y3 =515;
+    
     //Colores
     logic [3:0] color =4'hF;
     
     always_comb
     begin
+    
     case(cuadrante)
         2'b00:
             begin
-            Red = (contadorHorizontal <465 && contadorHorizontal >143 && contadorVertical <276 && contadorVertical >34) ? color:0;
-            Green = (contadorHorizontal <465 && contadorHorizontal >143 && contadorVertical <276 && contadorVertical >34) ? color:0;
-            Blue = (contadorHorizontal <465 && contadorHorizontal >143 && contadorVertical <276 && contadorVertical >34) ? color:0;   
+            Red = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;
+            Green = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;
+            Blue = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;   
             end
         2'b01:
             begin
-            Red = (contadorHorizontal <784 && contadorHorizontal >464 && contadorVertical <276 && contadorVertical >34) ? color:0;
-            Green = (contadorHorizontal <784 && contadorHorizontal >464 && contadorVertical <276 && contadorVertical >34) ? color:0;
-            Blue = (contadorHorizontal <784 && contadorHorizontal >464 && contadorVertical <276 && contadorVertical >34) ? color:0;   
+            Red = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;
+            Green = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;
+            Blue = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;   
             end
         2'b10:
             begin
-            Red = (contadorHorizontal <465 && contadorHorizontal >143 && contadorVertical <514 && contadorVertical >276) ? color:0;
-            Green = (contadorHorizontal <465 && contadorHorizontal >143 && contadorVertical <514 && contadorVertical >276) ? color:0;
-            Blue = (contadorHorizontal <465 && contadorHorizontal >143 && contadorVertical <514 && contadorVertical >276) ? color:0;   
+            Red = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;
+            Green = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;
+            Blue = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;   
             end
         2'b11:
             begin
-            Red = (contadorHorizontal <784 && contadorHorizontal >464 && contadorVertical <514 && contadorVertical >276) ? color:0;
-            Green = (contadorHorizontal <784 && contadorHorizontal >464 && contadorVertical <514 && contadorVertical >276) ? color:0;
-            Blue = (contadorHorizontal <784 && contadorHorizontal >464 && contadorVertical <514 && contadorVertical >276) ? color:0;  
+            Red = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;
+            Green = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;
+            Blue = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;  
             end
     
-    //assign Red = (contadorHorizontal <784 && contadorHorizontal >143 && contadorVertical <515 && contadorVertical >34) ? 4'hF:0;
-    //assign Green = (contadorHorizontal <784 && contadorHorizontal >143 && contadorVertical <515 && contadorVertical >34) ? 4'hF:0;
-    //assign Blue = (contadorHorizontal <784 && contadorHorizontal >143 && contadorVertical <515 && contadorVertical >34) ? 4'hF:0;
     endcase
     end
 endmodule
