@@ -1,0 +1,90 @@
+module principal(
+    input logic clk,
+    input logic [1:0] cuadrante,
+    output logic Hsync,
+    output logic Vsync,
+    output logic [3:0] Red,
+    output logic [3:0] Green,
+    output logic [3:0] Blue 
+    );
+    
+    wire clk25Mhz;
+    wire enableVcounter;
+    wire [15:0] contadorHorizontal;
+    wire [15:0] contadorVertical;
+    wire sprite1,sprite2,sprite3,sprite4;
+    
+    DivisorFrecuencia divisor(clk,clk25Mhz); //Instanciar
+    contadorHorizontal horizontal(clk25Mhz,enableVcounter,contadorHorizontal);
+    contadorVertical vertical(clk25Mhz,enableVcounter,contadorVertical);
+    
+    //salidas
+    assign Hsync = (contadorHorizontal<96) ? 1:0;
+    assign Vsync = (contadorVertical<2) ? 1:0;
+    
+    //dimensiones
+    integer limite_x1 = 144;
+    integer limite_x2 =464;
+    integer limite_x3 =784;
+    
+    integer limite_y1 = 35;
+    integer limite_y2 = 275;
+    integer limite_y3 =515;
+    
+    //Colores
+    logic [3:0] color =4'hF; //Blanco
+    
+    //Limites Sprites
+    integer sprite_x1=297;
+    integer sprite_x2=313;
+    integer sprite_x3=617;
+    integer sprite_x4=633;
+    
+    integer sprite_y1=148;
+    integer sprite_y2=164;
+    integer sprite_y3=388;
+    integer sprite_y4=404;
+    
+    
+    //Señales de activación de los sprites
+    
+    assign sprite1 = (sprite_x1<=contadorHorizontal) && (contadorHorizontal<sprite_x2) && (sprite_y1<=contadorVertical) && (contadorVertical<sprite_y2);
+    assign sprite2 = (sprite_x3<=contadorHorizontal) && (contadorHorizontal<sprite_x4) && (sprite_y1<=contadorVertical) && (contadorVertical<sprite_y2);
+    assign sprite3 = (sprite_x1<=contadorHorizontal) && (contadorHorizontal<sprite_x2) && (sprite_y3<=contadorVertical) && (contadorVertical<sprite_y4);
+    assign sprite4 = (sprite_x3<=contadorHorizontal) && (contadorHorizontal<sprite_x4) && (sprite_y3<=contadorVertical) && (contadorVertical<sprite_y4);
+    
+    always_comb
+    begin
+    
+        if(sprite1)
+        begin
+        Red=4'b1111;
+        Green=4'b1111;
+        Blue=4'b1111;
+        end
+        else if(sprite2)
+        begin
+        Red=4'b1100;
+        Green=4'b1010;
+        Blue=4'b1111;
+        end
+        else if(sprite3)
+        begin
+        Red=4'b1001;
+        Green=4'b1010;
+        Blue=4'b1111;
+        end
+        else if(sprite4)
+        begin
+        Red=4'b1000;
+        Green=4'b1111;
+        Blue=4'b1000;
+        end
+        else if(sprite1 == 0 && sprite2 == 0 && sprite3 ==0 && sprite4 == 0)
+        begin
+        Red=4'b0000;
+        Green=4'b0000;
+        Blue=4'b0000;
+        end
+    end
+endmodule
