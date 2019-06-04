@@ -17,6 +17,9 @@ module principal(
     contadorHorizontal horizontal(clk25Mhz,enableVcounter,pix_x);
     contadorVertical vertical(clk25Mhz,enableVcounter,pix_y);
     
+    wire clk1kHz;
+    DivisorFrecuenciaMaquina Maquina(clk,clk1kHz);
+    
     //salidas
     assign Hsync = (pix_x<96) ? 1:0;
     assign Vsync = (pix_y<2) ? 1:0;
