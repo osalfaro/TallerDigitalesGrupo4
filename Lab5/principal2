@@ -1,6 +1,7 @@
 module principal(
     input logic clk,
     input logic pushIn,
+    input logic reset;
     output logic Hsync,
     output logic Vsync,
     output logic [3:0] Red,
