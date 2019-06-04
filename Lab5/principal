@@ -10,16 +10,16 @@ module principal(
     
     wire clk25Mhz;
     wire enableVcounter;
-    wire [15:0] contadorHorizontal;
-    wire [15:0] contadorVertical;
+    wire [15:0] pix_x; //contadorHorizontal
+    wire [15:0] pix_y; //contadorVertical
     
     DivisorFrecuencia divisor(clk,clk25Mhz); //Instanciar
-    contadorHorizontal horizontal(clk25Mhz,enableVcounter,contadorHorizontal);
-    contadorVertical vertical(clk25Mhz,enableVcounter,contadorVertical);
+    contadorHorizontal horizontal(clk25Mhz,enableVcounter,pix_x);
+    contadorVertical vertical(clk25Mhz,enableVcounter,pix_y);
     
     //salidas
-    assign Hsync = (contadorHorizontal<96) ? 1:0;
-    assign Vsync = (contadorVertical<2) ? 1:0;
+    assign Hsync = (pix_x<96) ? 1:0;
+    assign Vsync = (pix_y<2) ? 1:0;
     
     //dimensiones
     integer limite_x1 = 144;
@@ -30,8 +30,11 @@ module principal(
     integer limite_y2 = 275;
     integer limite_y3 =515;
     
-    //Colores
-    logic [3:0] color =4'hF;
+    //se usa una sola variable de 12 bits para los colores
+    logic [11:0] RGB;
+    assign Red = RGB[11:8];
+    assign Green = RGB[7:4];
+    assign Blue = RGB[3:0];
     
     always_comb
     begin
@@ -39,29 +42,22 @@ module principal(
     case(cuadrante)
         2'b00:
             begin
-            Red = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;
-            Green = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;
-            Blue = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;   
+            RGB = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y2 && pix_y >=limite_y1) ? 12'hFFF : 0;
             end
         2'b01:
             begin
-            Red = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;
-            Green = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;
-            Blue = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y2 && contadorVertical >=limite_y1) ? color:0;   
+            RGB = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y2 && pix_y >=limite_y1) ? 12'hFFF : 0;
             end
         2'b10:
             begin
-            Red = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;
-            Green = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;
-            Blue = (contadorHorizontal <limite_x2 && contadorHorizontal >=limite_x1 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;   
+            RGB = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y3 && pix_y >=limite_y2) ? 12'hFFF : 0;
             end
         2'b11:
             begin
-            Red = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;
-            Green = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;
-            Blue = (contadorHorizontal <limite_x3 && contadorHorizontal >=limite_x2 && contadorVertical <limite_y3 && contadorVertical >=limite_y2) ? color:0;  
+            RGB = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y3 && pix_y >=limite_y2) ? 12'hFFF : 0;
             end
     
     endcase
+    
     end
 endmodule
