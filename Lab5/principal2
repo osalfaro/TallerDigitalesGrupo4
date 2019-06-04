@@ -1,0 +1,75 @@
+module principal(
+    input logic clk,
+    input logic pushIn,
+    output logic Hsync,
+    output logic Vsync,
+    output logic [3:0] Red,
+    output logic [3:0] Green,
+    output logic [3:0] Blue 
+    );
+    
+    wire clk25Mhz;
+    wire enableVcounter;
+    wire [15:0] pix_x; //contadorHorizontal
+    wire [15:0] pix_y; //contadorVertical
+    
+    DivisorFrecuencia divisor(clk,clk25Mhz); //Instanciar
+    contadorHorizontal horizontal(clk25Mhz,enableVcounter,pix_x);
+    contadorVertical vertical(clk25Mhz,enableVcounter,pix_y);
+    
+    //salidas
+    assign Hsync = (pix_x<96) ? 1:0;
+    assign Vsync = (pix_y<2) ? 1:0;
+    
+    //dimensiones
+    integer limite_x1 = 144;
+    integer limite_x2 =464;
+    integer limite_x3 =784;
+    
+    integer limite_y1 = 35;
+    integer limite_y2 = 275;
+    integer limite_y3 =515;
+    
+    //se usa una sola variable de 12 bits para los colores
+    logic [11:0] RGB;
+    assign Red = RGB[11:8];
+    assign Green = RGB[7:4];
+    assign Blue = RGB[3:0];
+    
+    wire clkanti;
+    
+    logic pushOut;
+    
+    logic [1:0] salidaMaquina;
+    
+    DivisorFrecuenciaAnti clkantirrebote(clk,clkanti);
+    
+    FF_D antirrebote(clkanti,reset,pushIn,pushOut);
+    
+    MaquinaEstados maq(pushOut,reset,clk1kHz,salidaMaquina);
+    
+    always_comb
+    begin
+    
+    case(salidaMaquina)
+        2'b00:
+            begin
+            RGB = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y2 && pix_y >=limite_y1) ? 12'hFFF : 0;
+            end
+        2'b01:
+            begin
+            RGB = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y2 && pix_y >=limite_y1) ? 12'hFFF : 0;
+            end
+        2'b10:
+            begin
+            RGB = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y3 && pix_y >=limite_y2) ? 12'hFFF : 0;
+            end
+        2'b11:
+            begin
+            RGB = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y3 && pix_y >=limite_y2) ? 12'hFFF : 0;
+            end
+    
+    endcase
+    
+    end
+endmodule
