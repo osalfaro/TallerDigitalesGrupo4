@@ -1,7 +1,7 @@
 module principal(
     input logic clk,
+    input logic reset,
     input logic pushIn,
-    input logic reset;
     output logic Hsync,
     output logic Vsync,
     output logic [3:0] Red,
@@ -18,9 +18,8 @@ module principal(
     contadorHorizontal horizontal(clk25Mhz,enableVcounter,pix_x);
     contadorVertical vertical(clk25Mhz,enableVcounter,pix_y);
     
-    wire clk1kHz;
-    DivisorFrecuenciaMaquina Maquina(clk,clk1kHz);
-    
+    wire clkMaquina;
+    DivisorFrecuenciaMaquina Maquina(clk,clkMaquina);
     //salidas
     assign Hsync = (pix_x<96) ? 1:0;
     assign Vsync = (pix_y<2) ? 1:0;
@@ -50,30 +49,39 @@ module principal(
     
     FF_D antirrebote(clkanti,reset,pushIn,pushOut);
     
-    MaquinaEstados maq(pushOut,reset,clk1kHz,salidaMaquina);
+    MaquinaEstados maq(pushOut,reset,clkMaquina,salidaMaquina);
+    
+    logic c1,c2,c3,c4; //variables de un bit que indican si el cuadrante esta activo (on/off)
+    assign c1 = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y2 && pix_y >=limite_y1);
+    assign c2 = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y2 && pix_y >=limite_y1);
+    assign c3 = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y3 && pix_y >=limite_y2);
+    assign c4 = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y3 && pix_y >=limite_y2);
+    
     
     always_comb
     begin
-    
-    case(salidaMaquina)
-        2'b00:
-            begin
-            RGB = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y2 && pix_y >=limite_y1) ? 12'hFFF : 0;
-            end
-        2'b01:
-            begin
-            RGB = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y2 && pix_y >=limite_y1) ? 12'hFFF : 0;
-            end
-        2'b10:
-            begin
-            RGB = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y3 && pix_y >=limite_y2) ? 12'hFFF : 0;
-            end
-        2'b11:
-            begin
-            RGB = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y3 && pix_y >=limite_y2) ? 12'hFFF : 0;
-            end
-    
-    endcase
+    if (salidaMaquina==3'b000)
+        RGB = 12'h000;
+    else if (c1 & (salidaMaquina==3'b001|salidaMaquina==3'b010|salidaMaquina==3'b011|salidaMaquina==3'b100))
+        begin
+        RGB = 12'hFFF;
+        end
+    else if(c2 & (salidaMaquina==3'b010|salidaMaquina==3'b011|salidaMaquina==3'b100))
+        begin
+        RGB = 12'hF00;
+        end
+    else if(c3 & (salidaMaquina==3'b011|salidaMaquina==3'b100))
+        begin
+        RGB = 12'h0F0;
+        end
+    else if (c4 & (salidaMaquina==3'b100))
+        begin
+        RGB = 12'h00F;
+        end
+    else
+        begin
+        RGB= 12'h000;
+        end
     
     end
 endmodule
