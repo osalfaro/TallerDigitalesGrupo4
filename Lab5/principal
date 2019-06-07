@@ -17,6 +17,8 @@ module principal(
     contadorHorizontal horizontal(clk25Mhz,enableVcounter,pix_x);
     contadorVertical vertical(clk25Mhz,enableVcounter,pix_y);
     
+    wire clkMaquina;
+    DivisorFrecuenciaMaquina Maquina(clk,clkMaquina);
     //salidas
     assign Hsync = (pix_x<96) ? 1:0;
     assign Vsync = (pix_y<2) ? 1:0;
@@ -35,6 +37,18 @@ module principal(
     assign Red = RGB[11:8];
     assign Green = RGB[7:4];
     assign Blue = RGB[3:0];
+    
+    wire clkanti;
+    
+    logic pushOut;
+    
+    logic [1:0] salidaMaquina;
+    
+    DivisorFrecuenciaAnti clkantirrebote(clk,clkanti);
+    
+    FF_D antirrebote(clkanti,reset,pushIn,pushOut);
+    
+    MaquinaEstados maq(pushOut,reset,clkMaquina,salidaMaquina);
     
     logic c1,c2,c3,c4; //variables de un bit que indican si el cuadrante esta activo (on/off)
     assign c1 = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y2 && pix_y >=limite_y1);
