@@ -36,28 +36,35 @@ module principal(
     assign Green = RGB[7:4];
     assign Blue = RGB[3:0];
     
+    logic c1,c2,c3,c4;
+    assign c1 = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y2 && pix_y >=limite_y1);
+    assign c2 = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y2 && pix_y >=limite_y1);
+    assign c3 = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y3 && pix_y >=limite_y2);
+    assign c4 = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y3 && pix_y >=limite_y2);
+    
     always_comb
     begin
     
-    case(cuadrante)
-        2'b00:
-            begin
-            RGB = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y2 && pix_y >=limite_y1) ? 12'hFFF : 0;
-            end
-        2'b01:
-            begin
-            RGB = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y2 && pix_y >=limite_y1) ? 12'hFFF : 0;
-            end
-        2'b10:
-            begin
-            RGB = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y3 && pix_y >=limite_y2) ? 12'hFFF : 0;
-            end
-        2'b11:
-            begin
-            RGB = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y3 && pix_y >=limite_y2) ? 12'hFFF : 0;
-            end
-    
-    endcase
+    if (c1 & (cuadrante==2'b00|cuadrante==2'b01|cuadrante==2'b10|cuadrante==2'b11))
+        begin
+        RGB = 12'hFFF;
+        end
+    else if(c2 & (cuadrante==2'b01|cuadrante==2'b10|cuadrante==2'b11))
+        begin
+        RGB = 12'hF00;
+        end
+    else if(c3 & (cuadrante==2'b10|cuadrante==2'b11))
+        begin
+        RGB = 12'h0F0;
+        end
+    else if (c4 & (cuadrante==2'b11))
+        begin
+        RGB = 12'h00F;
+        end
+    else
+        begin
+        RGB= 12'h000;
+        end
     
     end
 endmodule
