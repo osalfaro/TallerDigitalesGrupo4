@@ -43,7 +43,7 @@ module principal(
     
     logic pushOut;
     
-    logic [1:0] salidaMaquina;
+    logic [2:0] salidaMaquina;
     
     DivisorFrecuenciaAnti clkantirrebote(clk,clkanti);
     
