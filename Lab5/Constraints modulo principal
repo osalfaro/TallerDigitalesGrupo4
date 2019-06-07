@@ -29,7 +29,9 @@ set_property PACKAGE_PIN A4 [get_ports {Red[3]}]
 set_property PACKAGE_PIN B11 [get_ports Hsync]
 set_property PACKAGE_PIN B12 [get_ports Vsync]
 
-set_property IOSTANDARD LVCMOS33 [get_ports {cuadrante[1]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {cuadrante[0]}]
-set_property PACKAGE_PIN P4 [get_ports {cuadrante[1]}]
-set_property PACKAGE_PIN P3 [get_ports {cuadrante[0]}]
+
+set_property IOSTANDARD LVCMOS33 [get_ports pushIn]
+set_property PACKAGE_PIN E16 [get_ports pushIn]
+set_property PACKAGE_PIN U9 [get_ports reset]
+set_property IOSTANDARD LVCMOS33 [get_ports reset]
+
