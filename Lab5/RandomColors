@@ -1,0 +1,28 @@
+module RandomColores(
+input logic [3:0] opcion, //Entrada de los switch
+output logic [11:0] RGB
+);
+
+always_comb
+    case(opcion) //Se escogeran el par de numeros A y B que seran los operandos de la suma
+        0: begin RGB=12'b111101100010; end
+        1: begin RGB=12'b111000111010; end
+        2: begin RGB=12'b001101011110; end
+        3: begin RGB=12'b110111110000; end
+        4: begin RGB=12'b000011110011; end
+        5: begin RGB=12'b111100000000; end
+        6: begin RGB=12'b000011011111; end
+        7: begin RGB=12'b100100001111; end
+        8: begin RGB=12'b000010100000; end
+        9: begin RGB=12'b111101110100; end
+        10: begin RGB=12'b010000110000; end
+        11: begin RGB=12'b011001010101; end
+        12: begin RGB=12'b111101101001; end
+        13: begin RGB=12'b011000001000; end
+        14: begin RGB=12'b001111111010; end
+        15: begin RGB=12'b111011110110; end
+        default: begin RGB=12'b111111111111; end
+        
+    endcase
+   
+endmodule
