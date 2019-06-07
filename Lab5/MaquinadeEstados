@@ -1,0 +1,39 @@
+
+module MaquinaEstados(
+input logic entrada, reset, clk,
+output logic [2:0] salida
+    );
+    
+    typedef enum logic [2:0] {S0, S1, S2, S3,S4} statetype;
+    statetype estado, estadoSig;
+    
+    always_ff @(posedge clk, posedge reset)
+    if (reset)
+        estado <= S0;
+    else
+        estado <= estadoSig;
+        
+        
+    always_comb case (estado)
+        S0: if (entrada) estadoSig=S1;
+            else estadoSig=S0;
+        S1: if (entrada) estadoSig=S2;
+            else estadoSig=S1;
+        S2: if (entrada) estadoSig=S3;
+            else estadoSig=S2;
+        S3: if (entrada) estadoSig=S4;
+            else estadoSig=S3;
+       S4 : if (entrada) estadoSig=S0;
+            else estadoSig=S4;
+        default: estadoSig=S0;
+        
+        endcase
+    
+     always_comb 
+        if(estado==S0) salida=3'b000;
+        else if(estado==S1) salida=3'b001;
+        else if(estado==S2) salida=3'b010;
+        else if(estado==S3) salida=3'b011;
+        else if(estado==S4) salida=3'b100;
+    
+endmodule
