@@ -1,0 +1,10 @@
+module FF_D_12bits(
+    input logic clk,
+    input logic reset,
+    input logic [11:0] D,
+    output logic [11:0] Q);
+    
+    always_ff @(posedge clk,posedge reset)
+        if(reset) Q <= 'b0;
+        else    Q <= D;
+endmodule
