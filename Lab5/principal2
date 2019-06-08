@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module principal(
     input logic clk,
     input logic reset,
@@ -14,12 +16,13 @@ module principal(
     wire [15:0] pix_x; //contadorHorizontal
     wire [15:0] pix_y; //contadorVertical
     
-    DivisorFrecuencia divisor(clk,clk25Mhz); //Instanciar
+    DivisorFrecuencia divisor(clk,clk25Mhz);
     contadorHorizontal horizontal(clk25Mhz,enableVcounter,pix_x);
     contadorVertical vertical(clk25Mhz,enableVcounter,pix_y);
     
     wire clkMaquina;
     DivisorFrecuenciaMaquina Maquina(clk,clkMaquina);
+    
     //salidas
     assign Hsync = (pix_x<96) ? 1:0;
     assign Vsync = (pix_y<2) ? 1:0;
@@ -28,10 +31,21 @@ module principal(
     integer limite_x1 = 144;
     integer limite_x2 =464;
     integer limite_x3 =784;
-    
+   
     integer limite_y1 = 35;
     integer limite_y2 = 275;
     integer limite_y3 =515;
+    
+    //Limites Sprites
+    integer sprite_x1=297;
+    integer sprite_x2=313;
+    integer sprite_x3=617;
+    integer sprite_x4=633;
+    
+    integer sprite_y1=148;
+    integer sprite_y2=164;
+    integer sprite_y3=388;
+    integer sprite_y4=404;
     
     //se usa una sola variable de 12 bits para los colores
     logic [11:0] RGB;
@@ -39,49 +53,92 @@ module principal(
     assign Green = RGB[7:4];
     assign Blue = RGB[3:0];
     
+    //Antirrebote
     wire clkanti;
-    
     logic pushOut;
-    
-    logic [2:0] salidaMaquina;
-    
     DivisorFrecuenciaAnti clkantirrebote(clk,clkanti);
-    
     FF_D antirrebote(clkanti,reset,pushIn,pushOut);
     
+    //Maquina de estados
+    logic [2:0] salidaMaquina;
     MaquinaEstados maq(pushOut,reset,clkMaquina,salidaMaquina);
     
+    //Variables de activacion de cuadrantes y sprites
     logic c1,c2,c3,c4; //variables de un bit que indican si el cuadrante esta activo (on/off)
     assign c1 = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y2 && pix_y >=limite_y1);
     assign c2 = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y2 && pix_y >=limite_y1);
     assign c3 = (pix_x <limite_x2 && pix_x >=limite_x1 && pix_y <limite_y3 && pix_y >=limite_y2);
     assign c4 = (pix_x <limite_x3 && pix_x >=limite_x2 && pix_y <limite_y3 && pix_y >=limite_y2);
     
+    logic sprite1,sprite2,sprite3,sprite4;
+    assign sprite1 = (sprite_x1<=pix_x) && (pix_x<sprite_x2) && (sprite_y1<=pix_y) && (pix_y<sprite_y2);
+    assign sprite2 = (sprite_x3<=pix_x) && (pix_x<sprite_x4) && (sprite_y1<=pix_y) && (pix_y<sprite_y2);
+    assign sprite3 = (sprite_x1<=pix_x) && (pix_x<sprite_x2) && (sprite_y3<=pix_y) && (pix_y<sprite_y4);
+    assign sprite4 = (sprite_x3<=pix_x) && (pix_x<sprite_x4) && (sprite_y3<=pix_y) && (pix_y<sprite_y4);
     
+    //Impresion de cuadrantes y sprites
     always_comb
     begin
     if (salidaMaquina==3'b000)
-        RGB = 12'h000;
-    else if (c1 & (salidaMaquina==3'b001|salidaMaquina==3'b010|salidaMaquina==3'b011|salidaMaquina==3'b100))
         begin
-        RGB = 12'hFFF;
+        if(sprite1)
+            RGB = 12'hFFF;
+        else
+            RGB = 12'h000;
         end
-    else if(c2 & (salidaMaquina==3'b010|salidaMaquina==3'b011|salidaMaquina==3'b100))
+    else if (salidaMaquina==3'b001)
         begin
-        RGB = 12'hF00;
+        if (c1)
+            RGB = 12'hF9F;
+        else if(sprite2)
+            RGB = 12'hFFF;
+        else
+            RGB = 12'h000;
         end
-    else if(c3 & (salidaMaquina==3'b011|salidaMaquina==3'b100))
+    else if(salidaMaquina==3'b010)
         begin
-        RGB = 12'h0F0;
+        if (c1)
+            RGB = 12'hF9F;
+        else if(c2)
+            RGB = 12'hF00;
+        else if(sprite3)
+            RGB = 12'hFFF;
+        else
+            RGB = 12'h000;
         end
-    else if (c4 & (salidaMaquina==3'b100))
+    else if(salidaMaquina==3'b011)
         begin
-        RGB = 12'h00F;
+        if (c1)
+            RGB = 12'hF9F;
+        else if(c2)
+            RGB = 12'hF00;
+        else if(c3)
+            RGB = 12'h0F0;
+        else if(sprite4)
+            RGB = 12'hFFF;
+        else
+            RGB = 12'h000;
         end
-    else
+    else if (salidaMaquina==3'b100)
         begin
-        RGB= 12'h000;
+        if (c1)
+            begin
+            if(sprite1)
+                RGB = 12'hFFF;
+            else
+                RGB = 12'hF9F;
+            end
+        else if(c2)
+            RGB = 12'hF00;
+        else if(c3)
+            RGB = 12'h0F0;
+        else if(c4)
+            RGB = 12'h00F;
+      
+        else
+            RGB = 12'h000;
         end
-    
+        
     end
+
 endmodule
