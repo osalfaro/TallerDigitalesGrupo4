@@ -1,4 +1,4 @@
-module DivisorFrecuenciaMaquina #(parameter n = 19999999)(
+module DivisorFrecuenciaMaquina #(parameter n = 9999999)(
     input wire clk, //clock de la fpga 100MHz
     output logic clk2 = 0 //clock de salida con menor frecuencia
 );
