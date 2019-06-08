@@ -23,7 +23,7 @@ output logic [2:0] salida
             else estadoSig=S2;
         S3: if (entrada) estadoSig=S4;
             else estadoSig=S3;
-       S4 : if (entrada) estadoSig=S0;
+       S4 : if (entrada) estadoSig=S1;
             else estadoSig=S4;
         default: estadoSig=S0;
         
