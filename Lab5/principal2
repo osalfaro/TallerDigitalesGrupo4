@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module principal(
     input logic clk,
     input logic reset,
@@ -76,21 +74,36 @@ module principal(
     assign sprite3 = (sprite_x1<=pix_x) && (pix_x<sprite_x2) && (sprite_y3<=pix_y) && (pix_y<sprite_y4);
     assign sprite4 = (sprite_x3<=pix_x) && (pix_x<sprite_x4) && (sprite_y3<=pix_y) && (pix_y<sprite_y4);
     
+    
+    logic mantener = 0;
+    
     //Impresion de cuadrantes y sprites
     always_comb
     begin
-    if (salidaMaquina==3'b000)
+    if (salidaMaquina==3'b000) //este estado solo se usa en la primera vuelta
         begin
         if(sprite1)
             RGB = 12'hFFF;
         else
             RGB = 12'h000;
         end
+        
     else if (salidaMaquina==3'b001)
         begin
         if (c1)
             RGB = 12'hF9F;
-        else if(sprite2)
+        else if(c2 & mantener) //dentro de este cuadro va la condicion del sprite para que no se sobrepongan
+            begin
+            if (sprite2)
+                RGB = 12'hFFF;
+            else
+                RGB = 12'hF00;
+            end
+        else if(c3 & mantener)
+            RGB = 12'h0F0;
+        else if(c4 & mantener)
+            RGB = 12'h00F;
+        else if(sprite2 & ~mantener)
             RGB = 12'hFFF;
         else
             RGB = 12'h000;
@@ -101,7 +114,16 @@ module principal(
             RGB = 12'hF9F;
         else if(c2)
             RGB = 12'hF00;
-        else if(sprite3)
+        else if(c3 & mantener) //dentro de este cuadro va la condicion del sprite para que no se sobrepongan
+            begin
+            if (sprite3)
+                RGB = 12'hFFF;
+            else
+                RGB = 12'h0F0;
+            end
+        else if(c4 & mantener)
+            RGB = 12'h00F;
+        else if(sprite3 & ~mantener)
             RGB = 12'hFFF;
         else
             RGB = 12'h000;
@@ -114,14 +136,21 @@ module principal(
             RGB = 12'hF00;
         else if(c3)
             RGB = 12'h0F0;
-        else if(sprite4)
+        else if(c4 & mantener) //dentro de este cuadro va la condicion del sprite para que no se sobrepongan
+            begin
+            if (sprite4)
+                RGB = 12'hFFF;
+            else
+                RGB = 12'h00F;
+            end
+        else if(sprite4 & ~mantener)
             RGB = 12'hFFF;
         else
             RGB = 12'h000;
         end
     else if (salidaMaquina==3'b100)
         begin
-        if (c1)
+        if (c1) //dentro de este cuadro va la condicion del sprite para que no se sobrepongan
             begin
             if(sprite1)
                 RGB = 12'hFFF;
@@ -134,10 +163,18 @@ module principal(
             RGB = 12'h0F0;
         else if(c4)
             RGB = 12'h00F;
-      
         else
             RGB = 12'h000;
+        
+        //en el quinto estado se enciende mantener
+        if (~reset)
+            mantener = 1;
         end
+        
+        // para que se reinicie la variable mantener
+        // cuando hay reset:
+        if (reset)
+            mantener = 0;
         
     end
 
