@@ -1,10 +1,17 @@
-module RandomColores(
-input logic [3:0] opcion, //Entrada de los switch
-output logic [11:0] RGB
+module RandomColores( 
+output logic [11:0] RGB,
+input clk, rst 
 );
 
+logic [11:0] out;
+logic [3:0] opcion;
+
+lfsr random(out,clk,rst);
+
+assign opcion = out[3:0];
+
 always_comb
-    case(opcion) //Se escogeran el par de numeros A y B que seran los operandos de la suma
+    case(opcion) //Se escogeran el color RGB a utilizar 
         0: begin RGB=12'b111101100010; end
         1: begin RGB=12'b111000111010; end
         2: begin RGB=12'b001101011110; end
