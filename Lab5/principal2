@@ -74,13 +74,25 @@ module principal(
     assign sprite3 = (sprite_x1<=pix_x) && (pix_x<sprite_x2) && (sprite_y3<=pix_y) && (pix_y<sprite_y4);
     assign sprite4 = (sprite_x3<=pix_x) && (pix_x<sprite_x4) && (sprite_y3<=pix_y) && (pix_y<sprite_y4);
     
-    
+    //variable para mantener los colores en pantalla luego de la primera vuelta
     logic mantener = 0;
     
+    //instanciando modulo que genera colores de 12 bits
+    logic [11:0] colorRandom; //aqui se almacena el color generado, entra a los FF de los colores
+    RandomColores colores(colorRandom,clkMaquina,1'b0);
+    
+    //instanciando FF que van a guardar el color de cada cuadrante
+    logic clkFF1, clkFF2, clkFF3, clkFF4 = 0; //clocks para los FF de los colores
+    logic [11:0] color1, color2, color3, color4; //color de cada cuadrante
+    FF_D_12bits FFcolor1(clkFF1,reset,colorRandom,color1);
+    FF_D_12bits FFcolor2(clkFF2,reset,colorRandom,color2);
+    FF_D_12bits FFcolor3(clkFF3,reset,colorRandom,color3);
+    FF_D_12bits FFcolor4(clkFF4,reset,colorRandom,color4);
+    
     //Impresion de cuadrantes y sprites
-    always_comb
+    always @(*)
     begin
-    if (salidaMaquina==3'b000) //este estado solo se usa en la primera vuelta
+    if (salidaMaquina==3'b000)
         begin
         if(sprite1)
             RGB = 12'hFFF;
@@ -91,78 +103,81 @@ module principal(
     else if (salidaMaquina==3'b001)
         begin
         if (c1)
-            RGB = 12'hF9F;
-        else if(c2 & mantener) //dentro de este cuadro va la condicion del sprite para que no se sobrepongan
+            RGB = color1;
+        else if(c2 & mantener)
             begin
             if (sprite2)
                 RGB = 12'hFFF;
             else
-                RGB = 12'hF00;
+                RGB = color2;
             end
         else if(c3 & mantener)
-            RGB = 12'h0F0;
+            RGB = color3;
         else if(c4 & mantener)
-            RGB = 12'h00F;
+            RGB = color4;
         else if(sprite2 & ~mantener)
             RGB = 12'hFFF;
         else
             RGB = 12'h000;
         end
+        
     else if(salidaMaquina==3'b010)
         begin
         if (c1)
-            RGB = 12'hF9F;
+            RGB = color1;
         else if(c2)
-            RGB = 12'hF00;
-        else if(c3 & mantener) //dentro de este cuadro va la condicion del sprite para que no se sobrepongan
+            RGB = color2;
+        else if(c3 & mantener)
             begin
             if (sprite3)
                 RGB = 12'hFFF;
             else
-                RGB = 12'h0F0;
+                RGB = color3;
             end
         else if(c4 & mantener)
-            RGB = 12'h00F;
+            RGB = color4;
         else if(sprite3 & ~mantener)
             RGB = 12'hFFF;
         else
             RGB = 12'h000;
         end
+        
     else if(salidaMaquina==3'b011)
         begin
         if (c1)
-            RGB = 12'hF9F;
+            RGB = color1;
         else if(c2)
-            RGB = 12'hF00;
+            RGB = color2;
         else if(c3)
-            RGB = 12'h0F0;
-        else if(c4 & mantener) //dentro de este cuadro va la condicion del sprite para que no se sobrepongan
+            RGB = color3;
+        else if(c4 & mantener)
             begin
             if (sprite4)
                 RGB = 12'hFFF;
             else
-                RGB = 12'h00F;
+                RGB = color4;
             end
         else if(sprite4 & ~mantener)
             RGB = 12'hFFF;
         else
             RGB = 12'h000;
         end
+        
     else if (salidaMaquina==3'b100)
         begin
-        if (c1) //dentro de este cuadro va la condicion del sprite para que no se sobrepongan
+        if (c1)
             begin
             if(sprite1)
                 RGB = 12'hFFF;
             else
-                RGB = 12'hF9F;
+                RGB = color1;
             end
         else if(c2)
-            RGB = 12'hF00;
+            RGB = color2;
         else if(c3)
-            RGB = 12'h0F0;
+            RGB = color3;
         else if(c4)
-            RGB = 12'h00F;
+            RGB = color4;
         else
             RGB = 12'h000;
         
@@ -175,7 +190,28 @@ module principal(
         // cuando hay reset:
         if (reset)
             mantener = 0;
-        
-    end
-
+            
+        //condiciones para manejar los clocks de los FF que cambian colores
+        if (salidaMaquina==3'b001)
+            begin
+            clkFF1 = 1;
+            clkFF4 = 0;
+            end
+        else if (salidaMaquina==3'b010)
+            begin
+            clkFF2 = 1;
+            clkFF1 = 0;
+            end
+        else if (salidaMaquina==3'b011)
+            begin
+            clkFF3 = 1;
+            clkFF2 = 0;
+            end
+        else if (salidaMaquina==3'b100)
+            begin
+            clkFF4 = 1;
+            clkFF3 = 0;
+            end
+            
+    end //fin del always
 endmodule
