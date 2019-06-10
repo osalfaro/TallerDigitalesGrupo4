@@ -211,6 +211,7 @@ module principal(
             begin
             clkFF4 = 1;
             clkFF3 = 0;
+            clkFF1 = 0;
             end
             
     end //fin del always
