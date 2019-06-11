@@ -1,13 +1,17 @@
 module Testbench();
 
 logic clk = 0;
+logic reset;
+logic pushIn;
 logic Hsync;
 logic Vsync;
 logic [3:0] Red;
 logic [3:0] Green;
 logic [3:0] Blue;
 
-principal DUT(clk,Hsync,Vsync,Red,Green,Blue);
+principal DUT(clk,reset,pushIn,Hsync,Vsync,Red,Green,Blue);
 
+assign reset=0;
+assign pushIn=1;
 always #5 clk = ~clk;
 endmodule
